@@ -1,0 +1,36 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import RouteCard from "../components/RouteCard";
+
+interface Route {
+  readonly name: string;
+  readonly description: string;
+}
+
+function NewsSection() {
+  const [routes, setRoutes] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/routes')
+      .then(response => {
+        setRoutes(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+  const elements = routes.map((route: Route) =>
+    <RouteCard 
+      title={route.name}
+      description={route.description}  
+    />
+  );
+
+  return (
+    <div className="bg-cyan-50 flex flex-col w-full h-full">
+      {elements}
+    </div>
+  );
+}
+export default NewsSection;
