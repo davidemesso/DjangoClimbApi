@@ -1,14 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import RouteCard from "../components/RouteCard";
-import { Box } from "@mui/material";
 
 interface Route {
   readonly name: string;
   readonly description: string;
 }
 
-function NewsSection() {
+function RoutesSection() {
   const [routes, setRoutes] = useState([]);
 
   useEffect(() => {
@@ -29,11 +28,9 @@ function NewsSection() {
   );
 
   return (
-    <Box>
-      <div className="bg-cyan-50 flex flex-col w-full h-full">
-        {elements}
-      </div>
-    </Box>
+    <div className="bg-cyan-50 flex flex-col w-full h-full">
+      {elements}
+    </div>
   );
 }
-export default NewsSection;
+export default RoutesSection;

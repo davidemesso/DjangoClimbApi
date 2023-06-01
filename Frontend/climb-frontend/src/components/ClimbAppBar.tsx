@@ -12,8 +12,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
-const pages = ['News', 'Routes', 'Courses'];
-const settings = ['Profile', 'Logout'];
+const pages: { [key: string]: string } = {
+  'Notizie': '/news', 
+  'Percorsi': '/routes', 
+  'Corsi': '/courses',
+  'Prezzi': '/prices',
+};
+const settings : Array<string> = ['Profilo', 'Logout'];
 
 function ClimbAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -85,8 +90,8 @@ function ClimbAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+              {Object.entries(pages).map(([page, path]) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu} href={path}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -111,11 +116,12 @@ function ClimbAppBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {Object.entries(pages).map(([page, path]) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
+                href={path}
               >
                 {page}
               </Button>

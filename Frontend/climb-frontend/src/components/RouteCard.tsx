@@ -1,7 +1,6 @@
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
@@ -12,13 +11,7 @@ interface RouteCardProps {
 
 export default function RouteCard({title, description} : RouteCardProps) {
   return (
-    <Card className="m-8 animate-in animate-out fade-in fade-out hover:scale-[101%]">
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="/static/images/cards/contemplative-reptile.jpg"
-      />
+    <Card className="m-8 animate-in animate-out fade-in fade-out hover:scale-[101%] capitalize">
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {title}
