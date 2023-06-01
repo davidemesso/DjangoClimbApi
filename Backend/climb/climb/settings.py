@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'climb_api',
     'corsheaders',
+    'climb_auth',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +78,12 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+     ],
+}
 
 WSGI_APPLICATION = 'climb.wsgi.application'
 

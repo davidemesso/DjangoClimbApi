@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import (
-    RouteListApiView,
+    RoutesView,
 )
 
 urlpatterns = [
-    path('routes', RouteListApiView.as_view()),
+    path('routes', RoutesView.as_view()),
 ]

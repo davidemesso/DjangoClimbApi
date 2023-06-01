@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from climb_api import urls as api_urls
+from climb_auth import urls as auth_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
     path('api/', include(api_urls)),
+    path('auth/', include(auth_urls)),
 ]
