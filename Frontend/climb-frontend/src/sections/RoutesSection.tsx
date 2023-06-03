@@ -22,6 +22,7 @@ function RoutesSection() {
 
   const elements = routes.map((route: Route) =>
     <RouteCard 
+      key={route.name + Math.random()}
       title={route.name}
       description={route.description}  
     />
