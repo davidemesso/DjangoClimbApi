@@ -57,7 +57,7 @@ export default function ClimbAppBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ background: '#0080FF' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
