@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { logout } from '../utils/login';
+import { logout } from '../utils/auth';
 import { useContext } from "react";
 import { UserContext } from '../App';
 import { useNavigate } from 'react-router-dom';

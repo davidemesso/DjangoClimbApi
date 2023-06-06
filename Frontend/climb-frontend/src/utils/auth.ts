@@ -31,4 +31,31 @@ export const login = async (username: string, password: string): Promise<boolean
   })
 
   return success
+}
+
+export const register = async (
+  email: string, 
+  name: string,
+  surname: string,
+  password: string,
+) : Promise<boolean> => {  
+  const loginData = { 
+    "email": email, 
+    "first_name": name, 
+    "last_name": surname, 
+    "password": password 
+  }
+  
+  const success = await axios.post(
+    'http://localhost:8000/auth/register/',
+    loginData
+  )
+  .then(_ => {
+    return true
+  })
+  .catch(_ => {
+    return false
+  })
+
+  return success
 } 

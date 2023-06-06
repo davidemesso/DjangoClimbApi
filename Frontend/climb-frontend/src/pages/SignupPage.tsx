@@ -1,13 +1,11 @@
 import { Grid, Paper, Avatar, TextField, Button, Typography, Link, Box } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { login } from '../utils/auth';
+import { register } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
-import { UserContext } from '../App';
+import { useState } from 'react';
 
-export default function LoginPage() {
+export default function SignupPage() {
   const navigate = useNavigate()
-  const { setUser } = useContext(UserContext)
   const [isError, setError] = useState<boolean | undefined>(false)
 
   const showFormError = () => {
@@ -23,20 +21,28 @@ export default function LoginPage() {
           <Avatar className='mr-4'>
             <LockOutlinedIcon/>
           </Avatar>
-          <h2>Login</h2>
+          <h2>Sign up</h2>
         </Grid>
         <form
           onSubmit={async (e) => {
             e.preventDefault()
-            const success = await login(
+
+            const password = (document.getElementById("passwordField") as HTMLInputElement).value
+            const confirmation = (document.getElementById("confirmPasswordField") as HTMLInputElement).value
+
+            if (password != confirmation)
+              return setError(true);
+
+            const success = await register(
               (document.getElementById("emailField") as HTMLInputElement).value,
-              (document.getElementById("passwordField") as HTMLInputElement)?.value
+              (document.getElementById("nameField") as HTMLInputElement).value,
+              (document.getElementById("surnameField") as HTMLInputElement).value,
+              (document.getElementById("passwordField") as HTMLInputElement).value
             )
             if(!success)
               return showFormError()
 
-            navigate("/")
-            setUser(true)
+            navigate("/login")
           }}
         >
           <Box className="flex flex-col items-center mb-6">
@@ -45,6 +51,27 @@ export default function LoginPage() {
                 id="emailField"
                 label='Email'
                 placeholder='Inserisci email' 
+                variant="outlined"
+                className='w-full'
+                type="email"
+                required 
+              />
+            </Box>
+            <Box className='m-4 w-full'>
+              <TextField
+                id="nameField"
+                label='Nome'
+                placeholder='Inserisci nome' 
+                variant="outlined"
+                className='w-full'
+                required 
+              />
+            </Box>
+            <Box className='m-4 w-full'>
+              <TextField
+                id="surnameField"
+                label='Cognome'
+                placeholder='Inserisci cognome' 
                 variant="outlined"
                 className='w-full'
                 required 
@@ -63,19 +90,32 @@ export default function LoginPage() {
                 required 
               />
             </Box>
+            <Box className='m-4 w-full'>
+              <TextField
+                id="confirmPasswordField"
+                label='Conferma password'
+                error={isError}
+                placeholder='Conferma password' 
+                variant="outlined"
+                className='w-full'
+                hidden
+                type="password"
+                required 
+              />
+            </Box>
             <Button 
               type='submit'
               color='primary' 
               variant="contained" 
               className='m-8'
             >
-              Accedi
+              Registrati
             </Button>
           </Box>
         </form>
-        <Typography> Non hai un account?
-          <Link href="signup" className='pl-2' >
-            Sign Up
+        <Typography> Hai già un account?
+          <Link href="login" className='pl-2' >
+            Login
           </Link>
         </Typography>
       </Paper>
