@@ -109,7 +109,14 @@ export default function ClimbAppBar() {
               }}
             >
               {Object.entries(pages).map(([page, path]) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu} href={path}>
+                <MenuItem 
+                  key={page} 
+                  onClick={() => {
+                    handleCloseNavMenu()
+                    navigate(path)
+                  }} 
+                  href={path}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
