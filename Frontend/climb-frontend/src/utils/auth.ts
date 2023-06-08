@@ -1,4 +1,5 @@
 import axios from "axios"
+import { decodeJwt } from "jose"
 
 interface Tokens {
   readonly access : string,
@@ -9,8 +10,32 @@ export const isLogged = (): boolean => {
   return localStorage.getItem("climb_jwt_access") != null
 }
 
-export const getAccessToken = (): string | null => {
-  return localStorage.getItem("climb_jwt_access")
+export const getAccessToken = async (): Promise<string | null> => {
+  const access = localStorage.getItem("climb_jwt_access")
+  
+  if (!access)
+  return null
+  
+  const decoded = decodeJwt(access)
+  
+  if (decoded.exp! * 1000 > Date.now())
+    return access
+
+  const refresh = localStorage.getItem("climb_jwt_refresh")
+  if (!refresh)
+    return null
+
+  const decodedRefresh = decodeJwt(refresh)
+  
+  if (decodedRefresh.exp! * 1000 < Date.now())
+  {
+    logout()
+    return null
+  }
+
+  await refreshToken(refresh)
+  
+  return null
 }
 
 export const logout = (): void => {
@@ -42,7 +67,7 @@ export const isStaff = async (): Promise<boolean> => {
     'http://localhost:8000/auth/account/',
     {
       headers: {
-        'authorization': 'Bearer ' + getAccessToken()
+        'authorization': 'Bearer ' + await getAccessToken()
       }
     }
   )
@@ -55,6 +80,22 @@ export const isStaff = async (): Promise<boolean> => {
   })
 
   return success
+}
+
+export const refreshToken = async (refresh : string): Promise<boolean> => {  
+  const refreshed = await axios.post(
+    'http://localhost:8000/auth/token/refresh/',
+    {"refresh": refresh}
+  )
+  .then((data) => {
+    localStorage["climb_jwt_access"] = data.data.access
+    return true
+  })
+  .catch(_ => {
+    return false
+  })
+
+  return refreshed
 }
 
 export const register = async (
