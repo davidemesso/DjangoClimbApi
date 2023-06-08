@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { UserStaffContext } from "../App";
+import { UserInfoContext } from "../App";
 import AddNewsCard from "../components/AddNewsCard";
 import NewsCard from "../components/NewsCard";
 
@@ -14,7 +14,7 @@ interface News {
 
 function NewsSection() {
   const [news, setNews] = useState([]);
-  const {isStaff} = useContext(UserStaffContext);
+  const {userInfo} = useContext(UserInfoContext);
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/news')
@@ -38,7 +38,7 @@ function NewsSection() {
 
   return (
     <Box>
-      {isStaff ? <AddNewsCard/> : <></>}
+      {userInfo && userInfo.isStaff ? <AddNewsCard/> : <></>}
       <div className="flex flex-col w-full h-full">
         {elements}
       </div>

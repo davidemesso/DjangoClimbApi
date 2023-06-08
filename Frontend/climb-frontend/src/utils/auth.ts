@@ -1,5 +1,6 @@
 import axios from "axios"
 import { decodeJwt } from "jose"
+import { UserInfo } from "../App"
 
 interface Tokens {
   readonly access : string,
@@ -62,7 +63,7 @@ export const login = async (username: string, password: string): Promise<boolean
   return success
 }
 
-export const isStaff = async (): Promise<boolean> => {  
+export const getUserInfo = async (): Promise<UserInfo | null> => {  
   const success = await axios.get(
     'http://localhost:8000/auth/account/',
     {
@@ -72,11 +73,11 @@ export const isStaff = async (): Promise<boolean> => {
     }
   )
   .then((data) => {
-    const isStaff = data.data.isStaff
-    return isStaff
+    const userInfo : UserInfo = data.data
+    return userInfo
   })
   .catch(_ => {
-    return false
+    return null
   })
 
   return success

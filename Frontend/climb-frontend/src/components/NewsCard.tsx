@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext } from 'react';
-import { UserStaffContext } from '../App';
+import { UserInfoContext } from '../App';
 
 interface NewsCardProps {
   readonly title: string;
@@ -14,7 +14,7 @@ interface NewsCardProps {
 }
 
 export default function NewsCard({title, content, insertDate, username} : NewsCardProps) {
-  const {isStaff} = useContext(UserStaffContext);
+  const {userInfo} = useContext(UserInfoContext);
   
   return (
     <Card className="m-8 animate-in animate-out fade-in fade-out hover:scale-[101%] capitalize">
@@ -33,7 +33,7 @@ export default function NewsCard({title, content, insertDate, username} : NewsCa
             {username}
           </Typography>
           {
-            isStaff 
+            userInfo && userInfo.isStaff
             ? <CardActions className='flex flex-row-reverse'>
                 <Button size="small" variant='contained' color="error">
                   <DeleteIcon />

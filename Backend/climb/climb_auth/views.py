@@ -24,7 +24,8 @@ class AccountView(APIView):
         return Response(
             {
                 "username": request.user.username,
-                "isStaff": request.user.is_staff
+                "isStaff": request.user.is_staff,
+                "id": request.user.id
             }, 
             status=status.HTTP_200_OK
         )

@@ -5,8 +5,19 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { Avatar, Box, TextField } from '@mui/material';
+import { useContext } from 'react';
+import { UserInfoContext } from '../App';
 
 export default function AddNewsCard() {
+  const {userInfo} = useContext(UserInfoContext);
+
+  function handleAddNews(): void {
+    console.log(userInfo.id)
+    console.log(userInfo.username)
+    console.log(userInfo.isStaff)
+    // TODO actually call post news endpoint
+  }
+
   return (
     <Card className="m-8 animate-in animate-out fade-in fade-out hover:scale-[101%] capitalize">
       <Box className="flex items-center">
@@ -46,7 +57,7 @@ export default function AddNewsCard() {
         </Box>
       </CardContent>
       <CardActions>
-        <Button size="small">Aggiungi</Button>
+        <Button size="small" onClick={handleAddNews} >Aggiungi</Button>
         <Button size="small">Annulla</Button>
       </CardActions>
     </Card>

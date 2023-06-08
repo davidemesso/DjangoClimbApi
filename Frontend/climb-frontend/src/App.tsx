@@ -3,20 +3,26 @@ import NewsSection from "./sections/NewsSection";
 import ClimbAppBar from "./components/ClimbAppBar";
 import RoutesSection from "./sections/RoutesSection";
 import { createContext, useEffect, useState } from "react";
-import { isLogged, isStaff } from "./utils/auth";
+import { isLogged, getUserInfo } from "./utils/auth";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 
+export interface UserInfo {
+  readonly username : string,
+  readonly isStaff : string
+  readonly id : number
+}
+
 export const UserContext = createContext<any>(isLogged());
-export const UserStaffContext = createContext<any>(await isStaff());
+export const UserInfoContext = createContext<any>(await getUserInfo());
 
 function App() {
   const [user, setUser] = useState<Boolean>(isLogged());
-  const [staff, setIsStaff] = useState<Boolean>();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>();
   
   useEffect(() => {
     const fetchData = async () => {
-      setIsStaff(await isStaff())
+      setUserInfo(await getUserInfo())
     }
   
     fetchData()
@@ -27,7 +33,7 @@ function App() {
   return (
     <BrowserRouter>
       <UserContext.Provider value={{ user: user, setUser: setUser }}>
-        <UserStaffContext.Provider value={{ isStaff: staff }}>
+        <UserInfoContext.Provider value={{ userInfo: userInfo }}>
             <ClimbAppBar />
             <Routes>
               <Route path ="/" element={<NewsSection />} />
@@ -36,7 +42,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
             </Routes>
-        </UserStaffContext.Provider>
+        </UserInfoContext.Provider>
       </UserContext.Provider>
     </BrowserRouter>
   );
