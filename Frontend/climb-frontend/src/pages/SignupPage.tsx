@@ -14,7 +14,7 @@ export default function SignupPage() {
   
   return (
     <Grid>
-      <Paper elevation={10} className="p-12 h-[60%] w-[80%] m-auto mt-8 md:max-w-[50%]">
+      <Paper elevation={10} className="px-12 py-4 h-[60%] w-[80%] m-auto my-8 md:max-w-[50%]">
         <Grid 
           className='flex p-4 items-center justify-center' 
         >
@@ -35,6 +35,7 @@ export default function SignupPage() {
 
             const success = await register(
               (document.getElementById("emailField") as HTMLInputElement).value,
+              (document.getElementById("usernameField") as HTMLInputElement).value,
               (document.getElementById("nameField") as HTMLInputElement).value,
               (document.getElementById("surnameField") as HTMLInputElement).value,
               (document.getElementById("passwordField") as HTMLInputElement).value
@@ -46,7 +47,7 @@ export default function SignupPage() {
           }}
         >
           <Box className="flex flex-col items-center mb-6">
-            <Box className='m-4 w-full'>
+            <Box className='m-3 w-full'>
               <TextField
                 id="emailField"
                 label='Email'
@@ -57,7 +58,17 @@ export default function SignupPage() {
                 required 
               />
             </Box>
-            <Box className='m-4 w-full'>
+            <Box className='m-3 w-full'>
+              <TextField
+                id="usernameField"
+                label='Username'
+                placeholder='Inserisci username' 
+                variant="outlined"
+                className='w-full'
+                required 
+              />
+            </Box>
+            <Box className='m-3 w-full'>
               <TextField
                 id="nameField"
                 label='Nome'
@@ -67,7 +78,7 @@ export default function SignupPage() {
                 required 
               />
             </Box>
-            <Box className='m-4 w-full'>
+            <Box className='m-3 w-full'>
               <TextField
                 id="surnameField"
                 label='Cognome'
@@ -77,7 +88,7 @@ export default function SignupPage() {
                 required 
               />
             </Box>
-            <Box className='m-4 w-full'>
+            <Box className='m-3 w-full'>
               <TextField
                 id="passwordField"
                 label='Password'
@@ -90,7 +101,7 @@ export default function SignupPage() {
                 required 
               />
             </Box>
-            <Box className='m-4 w-full'>
+            <Box className='m-3 w-full'>
               <TextField
                 id="confirmPasswordField"
                 label='Conferma password'

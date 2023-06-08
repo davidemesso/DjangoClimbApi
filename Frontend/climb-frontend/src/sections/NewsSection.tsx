@@ -1,36 +1,44 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import RouteCard from "../components/RouteCard";
+import { useContext, useEffect, useState } from "react";
 import { Box } from "@mui/material";
+import { UserStaffContext } from "../App";
+import AddNewsCard from "../components/AddNewsCard";
+import NewsCard from "../components/NewsCard";
 
-interface Route {
-  readonly name: string;
-  readonly description: string;
+interface News {
+  readonly title: string;
+  readonly content: string;
+  readonly insert_date: Date;
+  readonly username: string;
 }
 
 function NewsSection() {
-  const [routes, setRoutes] = useState([]);
+  const [news, setNews] = useState([]);
+  const {isStaff} = useContext(UserStaffContext);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/routes')
+    axios.get('http://localhost:8000/api/news')
       .then(response => {
-        setRoutes(response.data);
+        setNews(response.data);
       })
       .catch(error => {
         console.error(error);
       });
   }, []);
 
-  const elements = routes.map((route: Route) =>
-    <RouteCard 
-      key={route.name + Math.random()}
-      title={route.name}
-      description={route.description}  
+  const elements = news.map((news: News) =>
+    <NewsCard 
+      key={news.title + Math.random()}
+      title={news.title}
+      content={news.content}
+      insertDate={news.insert_date}
+      username={news.username}
     />
   );
 
   return (
     <Box>
+      {isStaff ? <AddNewsCard/> : <></>}
       <div className="flex flex-col w-full h-full">
         {elements}
       </div>

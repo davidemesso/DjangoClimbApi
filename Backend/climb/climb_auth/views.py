@@ -21,4 +21,10 @@ class AccountView(APIView):
         '''
         if request.user.is_anonymous:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response(request.user.username, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "username": request.user.username,
+                "isStaff": request.user.is_staff
+            }, 
+            status=status.HTTP_200_OK
+        )

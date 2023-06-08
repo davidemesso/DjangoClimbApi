@@ -9,6 +9,10 @@ export const isLogged = (): boolean => {
   return localStorage.getItem("climb_jwt_access") != null
 }
 
+export const getAccessToken = (): string | null => {
+  return localStorage.getItem("climb_jwt_access")
+}
+
 export const logout = (): void => {
   localStorage.clear()
 }
@@ -33,14 +37,36 @@ export const login = async (username: string, password: string): Promise<boolean
   return success
 }
 
+export const isStaff = async (): Promise<boolean> => {  
+  const success = await axios.get(
+    'http://localhost:8000/auth/account/',
+    {
+      headers: {
+        'authorization': 'Bearer ' + getAccessToken()
+      }
+    }
+  )
+  .then((data) => {
+    const isStaff = data.data.isStaff
+    return isStaff
+  })
+  .catch(_ => {
+    return false
+  })
+
+  return success
+}
+
 export const register = async (
   email: string, 
+  username: string,
   name: string,
   surname: string,
   password: string,
 ) : Promise<boolean> => {  
   const loginData = { 
     "email": email, 
+    "username": username, 
     "first_name": name, 
     "last_name": surname, 
     "password": password 

@@ -16,7 +16,7 @@ export default function LoginPage() {
   
   return (
     <Grid>
-      <Paper elevation={10} className="p-12 h-[60%] w-[80%] m-auto mt-8 md:max-w-[50%]">
+      <Paper elevation={10} className="px-12 py-4 h-[60%] w-[80%] m-auto my-8 md:max-w-[50%]">
         <Grid 
           className='flex p-4 items-center justify-center' 
         >
@@ -29,7 +29,7 @@ export default function LoginPage() {
           onSubmit={async (e) => {
             e.preventDefault()
             const success = await login(
-              (document.getElementById("emailField") as HTMLInputElement).value,
+              (document.getElementById("usernameField") as HTMLInputElement).value,
               (document.getElementById("passwordField") as HTMLInputElement)?.value
             )
             if(!success)
@@ -40,17 +40,17 @@ export default function LoginPage() {
           }}
         >
           <Box className="flex flex-col items-center mb-6">
-            <Box className='m-4 w-full'>
+            <Box className='m-3 w-full'>
               <TextField
-                id="emailField"
-                label='Email'
-                placeholder='Inserisci email' 
+                id="usernameField"
+                label='Username'
+                placeholder='Inserisci username' 
                 variant="outlined"
                 className='w-full'
                 required 
               />
             </Box>
-            <Box className='m-4 w-full'>
+            <Box className='m-3 w-full'>
               <TextField
                 id="passwordField"
                 label='Password'
