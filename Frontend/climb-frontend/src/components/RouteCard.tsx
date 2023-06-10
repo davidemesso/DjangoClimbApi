@@ -10,6 +10,7 @@ import DifficultyRate from './DifficultyRate';
 import { UserInfoContext } from '../App';
 import axios from 'axios';
 import { getAccessToken } from '../utils/auth';
+import { Favorite } from '../sections/RoutesSection';
 
 interface RouteCardProps {
   readonly id: number;
@@ -18,6 +19,7 @@ interface RouteCardProps {
   readonly endDate: string;
   readonly difficulty: number;
   readonly favoritesCount: number;
+  readonly favorites: Array<Favorite>;
 }
 
 interface ExpandMoreProps extends IconButtonProps {
@@ -35,16 +37,18 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RouteCard({id, title, description, endDate, difficulty, favoritesCount} : RouteCardProps) {
+export default function RouteCard({id, title, description, endDate, difficulty, favoritesCount, favorites} : RouteCardProps) {
   const {userInfo} = useContext(UserInfoContext);
   const [expanded, setExpanded] = useState(false);
+  const [clicked, setClicked] = useState(false);
+  const [count, setCount] = useState(favoritesCount);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   async function handleFavorite(): Promise<void> {
-    await axios.post(
+    const success = await axios.post(
       `http://localhost:8000/api/routes/${id}/favorites`,
       {},
       {
@@ -52,9 +56,22 @@ export default function RouteCard({id, title, description, endDate, difficulty, 
           'authorization': 'Bearer ' + await getAccessToken()
         }
       }
-    );
+    ).then(_ => {
+      return true
+    })
+    .catch(_ => {
+      return false
+    });
 
-    
+    if (success)
+    {
+      setClicked(!clicked)
+      setCount(count + 1)
+    }
+  }
+
+  function containsFavorite(favorites: Favorite[], id: number) : boolean {
+    return favorites.some(obj => obj.route === id) 
   }
 
   return (
@@ -76,15 +93,15 @@ export default function RouteCard({id, title, description, endDate, difficulty, 
         <Tooltip title={userInfo ? "Preferito" : "Accedi per selezionare"}>
           <Box className="flex items-center">
             <IconButton 
-              className='hover:text-red-600' 
+              className={'hover:text-red-600 ' + (clicked ? "!text-red-600" : "")} 
               aria-label="add to favorites" 
               disabled={userInfo == null}
               onClick={handleFavorite}
             >
-              <FavoriteIcon/>
+              <FavoriteIcon className={containsFavorite(favorites, id) ? "text-red-600" : ""}/>
             </IconButton>
             <Typography>
-              {favoritesCount}
+              {count}
             </Typography>
           </Box>
         </Tooltip>

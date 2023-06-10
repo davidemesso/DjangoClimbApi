@@ -35,3 +35,8 @@ class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
         fields = ["user", "route"]
+
+class UserFavoritesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = ["route"]

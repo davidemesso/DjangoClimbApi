@@ -4,7 +4,7 @@ from rest_framework import status
 from climb.utils import authentication_required
 from climb.utils import staff_required
 from .models import Favorite, News, Route
-from .serializers import FavoritesSerializer, GetNewsSerializer, GetRoutesSerializer, NewsSerializer, RoutesSerializer, UpdateNewsSerializer
+from .serializers import FavoritesSerializer, GetNewsSerializer, GetRoutesSerializer, NewsSerializer, RoutesSerializer, UpdateNewsSerializer, UserFavoritesSerializer
 
 class RoutesView(APIView):
     def get(self, request, *args, **kwargs):
@@ -103,6 +103,16 @@ class NewsView(APIView):
         except News.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
+
+class UserFavoritesView(APIView):
+    @authentication_required
+    def get(self, request):
+        '''
+        Get the favorite routes for user
+        '''
+        favorites = Favorite.objects.filter(user=request.user.pk)
+        serializer = UserFavoritesSerializer(favorites, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FavoritesView(APIView):
     @authentication_required

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import RouteCard from "../components/RouteCard";
+import { getAccessToken } from "../utils/auth";
 
 interface Route {
   readonly id: number;
@@ -11,8 +12,13 @@ interface Route {
   readonly favorites_count: number;
 }
 
+export interface Favorite {
+  readonly route: number;
+}
+
 function RoutesSection() {
-  const [routes, setRoutes] = useState([]);
+  const [routes, setRoutes] = useState<Array<Route>>([]);
+  const [favorites, setFavorites] = useState<Array<Favorite>>([]);
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/routes')
@@ -22,6 +28,25 @@ function RoutesSection() {
       .catch(error => {
         console.error(error);
       });
+
+    const fetchData = async () => {
+      await axios.get('http://localhost:8000/api/user/favorites',
+        {
+          headers: {
+            'authorization': 'Bearer ' + await getAccessToken()
+          }
+        }
+        )
+        .then(response => {
+          setFavorites(response.data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+
+    fetchData()
+      .catch(console.error);
   }, []);
 
   const elements = routes.map((route: Route) =>
@@ -32,7 +57,8 @@ function RoutesSection() {
       description={route.description}  
       endDate={route.end_date}  
       difficulty={route.difficulty}  
-      favoritesCount={route.favorites_count}  
+      favoritesCount={route.favorites_count}
+      favorites={favorites}
     />
   );
 
