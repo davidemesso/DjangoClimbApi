@@ -127,9 +127,10 @@ class FavoritesView(APIView):
             'user': user,
         }
         
-        existing = Favorite.objects.filter(user=user, route=id).exists()
-        if existing:
-            return Response(status=status.HTTP_409_CONFLICT)
+        existing = Favorite.objects.filter(user=user, route=id)
+        if existing.exists():
+            existing.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         
         serializer = FavoritesSerializer(data=data)
         if serializer.is_valid():

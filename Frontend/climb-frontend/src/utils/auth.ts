@@ -41,6 +41,7 @@ export const getAccessToken = async (): Promise<string | null> => {
 
 export const logout = (): void => {
   localStorage.clear()
+  location.reload()
 }
 
 export const login = async (username: string, password: string): Promise<boolean> => {

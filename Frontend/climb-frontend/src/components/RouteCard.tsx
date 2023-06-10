@@ -40,7 +40,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 export default function RouteCard({id, title, description, endDate, difficulty, favoritesCount, favorites} : RouteCardProps) {
   const {userInfo} = useContext(UserInfoContext);
   const [expanded, setExpanded] = useState(false);
-  const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState<boolean | null>(null);
   const [count, setCount] = useState(favoritesCount);
 
   const handleExpandClick = () => {
@@ -48,7 +48,7 @@ export default function RouteCard({id, title, description, endDate, difficulty, 
   };
 
   async function handleFavorite(): Promise<void> {
-    const success = await axios.post(
+    const status = await axios.post(
       `http://localhost:8000/api/routes/${id}/favorites`,
       {},
       {
@@ -56,22 +56,31 @@ export default function RouteCard({id, title, description, endDate, difficulty, 
           'authorization': 'Bearer ' + await getAccessToken()
         }
       }
-    ).then(_ => {
-      return true
+    ).then(data => {
+      return data.status
     })
     .catch(_ => {
-      return false
+      return null
     });
 
-    if (success)
+    if (status == null)
+      return
+      
+    if (status == 201)
     {
-      setClicked(!clicked)
+      setClicked(true)
       setCount(count + 1)
+    }
+
+    if (status == 204)
+    {
+      setClicked(false)
+      setCount(count - 1)
     }
   }
 
   function containsFavorite(favorites: Favorite[], id: number) : boolean {
-    return favorites.some(obj => obj.route === id) 
+    return favorites.some(obj => obj.route === id) && clicked == null
   }
 
   return (
@@ -90,10 +99,10 @@ export default function RouteCard({id, title, description, endDate, difficulty, 
         />
       </CardContent>
       <CardActions disableSpacing>
-        <Tooltip title={userInfo ? "Preferito" : "Accedi per selezionare"}>
+        <Tooltip title={userInfo ? "Preferito" : "Accedi per aggiungere ai preferiti"}>
           <Box className="flex items-center">
             <IconButton 
-              className={'hover:text-red-600 ' + (clicked ? "!text-red-600" : "")} 
+              className={clicked ? "!text-red-600" : "!text-gray-500"} 
               aria-label="add to favorites" 
               disabled={userInfo == null}
               onClick={handleFavorite}
