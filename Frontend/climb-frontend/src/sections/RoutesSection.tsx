@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import RouteCard from "../components/RouteCard";
 
 interface Route {
+  readonly id: number;
   readonly name: string;
   readonly description: string;
+  readonly end_date: string;
   readonly difficulty: number;
+  readonly favorites_count: number;
 }
 
 function RoutesSection() {
@@ -24,9 +27,12 @@ function RoutesSection() {
   const elements = routes.map((route: Route) =>
     <RouteCard 
       key={route.name + Math.random()}
+      id={route.id}  
       title={route.name}
       description={route.description}  
+      endDate={route.end_date}  
       difficulty={route.difficulty}  
+      favoritesCount={route.favorites_count}  
     />
   );
 

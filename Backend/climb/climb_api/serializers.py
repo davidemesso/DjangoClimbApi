@@ -1,11 +1,17 @@
-from datetime import timezone
 from rest_framework import serializers
-from .models import News, Route
+from .models import Favorite, News, Route
 
-class RouteSerializer(serializers.ModelSerializer):
+class RoutesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
         fields = ["name", "difficulty", "description", "end_date"]
+
+class GetRoutesSerializer(serializers.ModelSerializer):
+    favorites_count = serializers.ReadOnlyField(source='favorites.count')
+    
+    class Meta:
+        model = Route
+        fields = ["id", "name", "difficulty", "description", "end_date", "favorites_count"]
 
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,3 +30,8 @@ class UpdateNewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = "__all__"
+
+class FavoritesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = ["user", "route"]

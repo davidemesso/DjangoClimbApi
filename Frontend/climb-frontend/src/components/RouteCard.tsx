@@ -1,17 +1,23 @@
-import { CardHeader, IconButton, Collapse, IconButtonProps, styled, CardMedia } from '@mui/material';
+import { CardHeader, IconButton, Collapse, IconButtonProps, styled, CardMedia, Tooltip, Box } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import DifficultyRate from './DifficultyRate';
+import { UserInfoContext } from '../App';
+import axios from 'axios';
+import { getAccessToken } from '../utils/auth';
 
 interface RouteCardProps {
+  readonly id: number;
   readonly title: string;
   readonly description: string;
+  readonly endDate: string;
   readonly difficulty: number;
+  readonly favoritesCount: number;
 }
 
 interface ExpandMoreProps extends IconButtonProps {
@@ -29,18 +35,33 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RouteCard({title, description, difficulty} : RouteCardProps) {
+export default function RouteCard({id, title, description, endDate, difficulty, favoritesCount} : RouteCardProps) {
+  const {userInfo} = useContext(UserInfoContext);
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  async function handleFavorite(): Promise<void> {
+    await axios.post(
+      `http://localhost:8000/api/routes/${id}/favorites`,
+      {},
+      {
+        headers: {
+          'authorization': 'Bearer ' + await getAccessToken()
+        }
+      }
+    );
+
+    
+  }
+
   return (
     <Card className="m-8 animate-in animate-out fade-in fade-out hover:scale-[101%] capitalize table">
       <CardHeader
         title={title}
-        subheader="September 14, 2016"
+        subheader={endDate ?? "Scadenza TBD"}
         action={<DifficultyRate rating={difficulty}/>}
       />
       <CardContent>
@@ -52,9 +73,21 @@ export default function RouteCard({title, description, difficulty} : RouteCardPr
         />
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
+        <Tooltip title={userInfo ? "Preferito" : "Accedi per selezionare"}>
+          <Box className="flex items-center">
+            <IconButton 
+              className='hover:text-red-600' 
+              aria-label="add to favorites" 
+              disabled={userInfo == null}
+              onClick={handleFavorite}
+            >
+              <FavoriteIcon/>
+            </IconButton>
+            <Typography>
+              {favoritesCount}
+            </Typography>
+          </Box>
+        </Tooltip>
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}

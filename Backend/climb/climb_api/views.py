@@ -1,17 +1,21 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from climb.utils import authentication_required
 from climb.utils import staff_required
-from .models import News, Route
-from .serializers import GetNewsSerializer, NewsSerializer, RouteSerializer, UpdateNewsSerializer
+from .models import Favorite, News, Route
+from .serializers import FavoritesSerializer, GetNewsSerializer, GetRoutesSerializer, NewsSerializer, RoutesSerializer, UpdateNewsSerializer
 
 class RoutesView(APIView):
     def get(self, request, *args, **kwargs):
         '''
         List all the Route items
         '''
-        routes = Route.objects.all()
-        serializer = RouteSerializer(routes, many=True)
+        routes = Route.objects\
+            .all()\
+            .prefetch_related("favorites")
+            
+        serializer = GetRoutesSerializer(routes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @staff_required
@@ -25,7 +29,7 @@ class RoutesView(APIView):
             'description': request.data.get('description'),
             'end_date': request.data.get('end_date')
         }
-        serializer = RouteSerializer(data=data)
+        serializer = RoutesSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -98,3 +102,28 @@ class NewsView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except News.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+
+class FavoritesView(APIView):
+    @authentication_required
+    def post(self, request, id):
+        '''
+        Assing the route to the user favorites
+        '''
+        user = request.user.pk
+        
+        data = {
+            'route': id, 
+            'user': user,
+        }
+        
+        existing = Favorite.objects.filter(user=user, route=id).exists()
+        if existing:
+            return Response(status=status.HTTP_409_CONFLICT)
+        
+        serializer = FavoritesSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
