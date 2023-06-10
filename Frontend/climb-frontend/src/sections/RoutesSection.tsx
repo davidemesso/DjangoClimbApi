@@ -5,6 +5,7 @@ import RouteCard from "../components/RouteCard";
 interface Route {
   readonly name: string;
   readonly description: string;
+  readonly difficulty: number;
 }
 
 function RoutesSection() {
@@ -25,11 +26,12 @@ function RoutesSection() {
       key={route.name + Math.random()}
       title={route.name}
       description={route.description}  
+      difficulty={route.difficulty}  
     />
   );
 
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-[80%] mx-auto h-fit">
       {elements}
     </div>
   );
