@@ -16,7 +16,6 @@ import { useContext } from "react";
 import { UserContext } from '../App';
 import { UserInfoContext } from '../App';
 import { useNavigate } from 'react-router-dom';
-import { Circle } from '@mui/icons-material';
 
 
 export default function ClimbAppBar() {

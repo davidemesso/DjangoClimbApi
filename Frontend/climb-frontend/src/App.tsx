@@ -14,7 +14,7 @@ export interface UserInfo {
 }
 
 export const UserContext = createContext<any>(isLogged());
-export const UserInfoContext = createContext<any>(await getUserInfo());
+export const UserInfoContext = createContext<any>(null);
 
 function App() {
   const [user, setUser] = useState<Boolean>(isLogged());
