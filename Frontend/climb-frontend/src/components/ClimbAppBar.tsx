@@ -14,13 +14,16 @@ import MenuItem from '@mui/material/MenuItem';
 import { logout } from '../utils/auth';
 import { useContext } from "react";
 import { UserContext } from '../App';
+import { UserInfoContext } from '../App';
 import { useNavigate } from 'react-router-dom';
+import { Circle } from '@mui/icons-material';
 
 
 export default function ClimbAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const {user, setUser} = useContext(UserContext);
+  const {userInfo} = useContext(UserInfoContext);
   const navigate = useNavigate()
   
   const pages: { [key: string]: string } = {
@@ -160,8 +163,10 @@ export default function ClimbAppBar() {
                 ? 
                 <>
                 <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="A"/>
+                  <IconButton onClick={handleOpenUserMenu}>
+                    <Avatar className="!bg-blue-700 capitalize">
+                      {userInfo && userInfo.username[0]}
+                    </Avatar>
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -188,7 +193,7 @@ export default function ClimbAppBar() {
                       <Typography textAlign="center">{option}</Typography>
                     </MenuItem>
                   ))}
-                </Menu> 
+                </Menu>
                 </>
                 : <Button 
                     color="inherit"
