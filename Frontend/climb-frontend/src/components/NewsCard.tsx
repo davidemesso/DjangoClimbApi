@@ -44,7 +44,8 @@ export default function NewsCard({title, content, insertDate, username, id, setR
         <Typography id={"contentField"+id} 
           contentEditable={editable} 
           suppressContentEditableWarning={true} 
-          variant="body2" 
+          variant="body2"
+          whiteSpace="pre-wrap"
           textTransform="none"
           color={error? "red" : "text.primary"}
           className={editable ? "border-b-2 border-solid " + (error ? "border-red-500" : "") : ""}
