@@ -1,6 +1,8 @@
+import datetime
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Route(models.Model):
     name = models.CharField(max_length = 180)
@@ -16,7 +18,7 @@ class Route(models.Model):
 class News(models.Model):
     title = models.CharField(max_length = 100)
     content = models.CharField(max_length = 1500)
-    insert_date = models.DateField(null=True)
+    insert_date = models.DateTimeField(default=timezone.now)
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

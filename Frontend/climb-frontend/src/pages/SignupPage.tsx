@@ -49,6 +49,7 @@ export default function SignupPage() {
           <Box className="flex flex-col items-center mb-6">
             <Box className='m-3 w-full'>
               <TextField
+                inputProps={{ maxLength: 254 }}
                 id="emailField"
                 label='Email'
                 placeholder='Inserisci email' 
@@ -60,6 +61,7 @@ export default function SignupPage() {
             </Box>
             <Box className='m-3 w-full'>
               <TextField
+                inputProps={{ maxLength: 150 }}
                 id="usernameField"
                 label='Username'
                 placeholder='Inserisci username' 
@@ -70,6 +72,7 @@ export default function SignupPage() {
             </Box>
             <Box className='m-3 w-full'>
               <TextField
+                inputProps={{ maxLength: 150 }}
                 id="nameField"
                 label='Nome'
                 placeholder='Inserisci nome' 
@@ -80,6 +83,7 @@ export default function SignupPage() {
             </Box>
             <Box className='m-3 w-full'>
               <TextField
+                inputProps={{ maxLength: 150 }}
                 id="surnameField"
                 label='Cognome'
                 placeholder='Inserisci cognome' 

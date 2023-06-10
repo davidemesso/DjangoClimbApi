@@ -33,7 +33,7 @@ function App() {
   return (
     <BrowserRouter>
       <UserContext.Provider value={{ user: user, setUser: setUser }}>
-        <UserInfoContext.Provider value={{ userInfo: userInfo }}>
+        <UserInfoContext.Provider value={{ userInfo : userInfo }}>
             <ClimbAppBar />
             <Routes>
               <Route path ="/" element={<NewsSection />} />

@@ -10,10 +10,12 @@ interface News {
   readonly content: string;
   readonly insert_date: Date;
   readonly username: string;
+  readonly id: number;
 }
 
 function NewsSection() {
   const [news, setNews] = useState([]);
+  const [refresh, setRefresh] = useState<boolean>();
   const {userInfo} = useContext(UserInfoContext);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ function NewsSection() {
       .catch(error => {
         console.error(error);
       });
-  }, []);
+  }, [refresh]);
 
   const elements = news.map((news: News) =>
     <NewsCard 
@@ -33,12 +35,15 @@ function NewsSection() {
       content={news.content}
       insertDate={news.insert_date}
       username={news.username}
+      id={news.id}
+      setRefresh={setRefresh} 
+      refresh={refresh}
     />
   );
 
   return (
     <Box>
-      {userInfo && userInfo.isStaff ? <AddNewsCard/> : <></>}
+      {userInfo && userInfo.isStaff ? <AddNewsCard setRefresh={setRefresh} refresh={refresh}/> : <></>}
       <div className="flex flex-col w-full h-full">
         {elements}
       </div>
