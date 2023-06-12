@@ -29,6 +29,18 @@ class RoutesView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @staff_required
+    def delete(self, request, *args, **kwargs):
+        '''
+        Delete the Route
+        '''
+        try:
+            obj = Route.objects.get(pk=request.data.get('id'))
+            obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Route.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class NewsView(APIView):

@@ -66,6 +66,8 @@ function RoutesSection() {
       favoritesCount={route.favorites_count}
       favorites={favorites}
       image={route.image}
+      refresh={refresh}
+      setRefresh={setRefresh}
     />
   );
 
