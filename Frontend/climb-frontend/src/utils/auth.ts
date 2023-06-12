@@ -36,7 +36,7 @@ export const getAccessToken = async (): Promise<string | null> => {
 
   await refreshToken(refresh)
   
-  return null
+  return localStorage.getItem("climb_jwt_access")
 }
 
 export const logout = (): void => {

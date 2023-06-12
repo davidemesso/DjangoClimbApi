@@ -4,14 +4,14 @@ from .models import Favorite, News, Route
 class RoutesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
-        fields = ["name", "difficulty", "description", "end_date"]
+        fields = ["name", "difficulty", "description", "end_date",  "image"]
 
 class GetRoutesSerializer(serializers.ModelSerializer):
     favorites_count = serializers.ReadOnlyField(source='favorites.count')
     
     class Meta:
         model = Route
-        fields = ["id", "name", "difficulty", "description", "end_date", "favorites_count"]
+        fields = ["id", "name", "difficulty", "description", "end_date", "favorites_count", "image"]
 
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:

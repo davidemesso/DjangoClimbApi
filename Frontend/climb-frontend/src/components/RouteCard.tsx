@@ -11,6 +11,7 @@ import { UserInfoContext } from '../App';
 import axios from 'axios';
 import { getAccessToken } from '../utils/auth';
 import { Favorite } from '../sections/RoutesSection';
+import { BACKEND_URL } from '../utils/urls';
 
 interface RouteCardProps {
   readonly id: number;
@@ -18,6 +19,7 @@ interface RouteCardProps {
   readonly description: string;
   readonly endDate: string;
   readonly difficulty: number;
+  readonly image: any;
   readonly favoritesCount: number;
   readonly favorites: Array<Favorite>;
 }
@@ -37,7 +39,16 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RouteCard({id, title, description, endDate, difficulty, favoritesCount, favorites} : RouteCardProps) {
+export default function RouteCard({
+  id, 
+  title, 
+  description, 
+  endDate, 
+  difficulty,
+  image, 
+  favoritesCount, 
+  favorites
+} : RouteCardProps) {
   const {userInfo} = useContext(UserInfoContext);
   const [expanded, setExpanded] = useState(false);
   const [clicked, setClicked] = useState<boolean | null>(null);
@@ -93,9 +104,9 @@ export default function RouteCard({id, title, description, endDate, difficulty, 
       <CardContent>
         <CardMedia
           component="img"
-          height="194"
-          image="/static/images/route.png"
-          alt="Paella dish"
+          className='!object-contain max-h-80'
+          image={BACKEND_URL + image}
+          alt="Route img"
         />
       </CardContent>
       <CardActions disableSpacing>
@@ -125,7 +136,11 @@ export default function RouteCard({id, title, description, endDate, difficulty, 
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>
+          <Typography 
+            paragraph 
+            whiteSpace="pre-wrap"
+            textTransform="none"
+          >
             {description}
           </Typography>
         </CardContent>

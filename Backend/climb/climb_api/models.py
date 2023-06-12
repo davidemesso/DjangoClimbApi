@@ -10,6 +10,7 @@ class Route(models.Model):
     )
     description = models.CharField(max_length = 500)
     end_date = models.DateField(null=True)
+    image = models.ImageField(upload_to='route_images/')
 
     def __str__(self):
         return self.name
@@ -22,12 +23,6 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
-    
-class Photo(models.Model):
-    file = models.ImageField()
-
-    def __str__(self):
-        return self.file.name
     
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

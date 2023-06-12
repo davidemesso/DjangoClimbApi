@@ -23,13 +23,7 @@ class RoutesView(APIView):
         '''
         Create the Route with given data
         '''
-        data = {
-            'name': request.data.get('name'), 
-            'difficulty': request.data.get('difficulty'), 
-            'description': request.data.get('description'),
-            'end_date': request.data.get('end_date')
-        }
-        serializer = RoutesSerializer(data=data)
+        serializer = RoutesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
