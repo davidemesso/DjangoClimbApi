@@ -44,9 +44,9 @@ function NewsSection() {
   return (
     <Box>
       {userInfo && userInfo.isStaff ? <AddNewsCard setRefresh={setRefresh} refresh={refresh}/> : <></>}
-      <div className="flex flex-col w-full h-full">
+      <Box className="flex flex-col w-full h-full">
         {elements}
-      </div>
+      </Box>
     </Box>
   );
 }

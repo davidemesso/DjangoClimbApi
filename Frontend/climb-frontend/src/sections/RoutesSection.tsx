@@ -74,9 +74,9 @@ function RoutesSection() {
   return (
     <Box>
       {userInfo && userInfo.isStaff ? <AddRouteCard setRefresh={setRefresh} refresh={refresh}/> : <></>}
-      <div className="flex flex-col w-[80%] mx-auto h-fit">
+      <Box className="flex flex-col w-full mx-auto h-fit">
         {elements}
-      </div>
+      </Box>
     </Box>
   );
 }

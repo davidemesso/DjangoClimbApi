@@ -31,7 +31,7 @@ export default function NewsCard({title, content, insertDate, username, id, setR
       <CardContent>
         <Typography id={"titleField"+id} 
           contentEditable={editable} 
-          suppressContentEditableWarning={true} 
+          suppressContentEditableWarning 
           gutterBottom 
           variant="h5" 
           component="div"

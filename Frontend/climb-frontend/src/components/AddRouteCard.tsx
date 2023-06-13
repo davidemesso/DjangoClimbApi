@@ -147,7 +147,7 @@ export default function AddRouteCard({setRefresh, refresh} : AddRouteCardProps) 
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              label="Controlled picker"
+              label="Seleziona data"
               value={date}
               minDate={dayjs(Date())}
               onChange={(newValue) => setDate(newValue)}
