@@ -2,9 +2,12 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import RouteCard from "../components/RouteCard";
 import { getAccessToken } from "../utils/auth";
-import { Box } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { UserInfoContext } from "../App";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AddRouteCard from "../components/AddRouteCard";
+import DifficultyRate from "../components/DifficultyRate";
 
 interface Route {
   readonly id: number;
@@ -24,10 +27,13 @@ function RoutesSection() {
   const [routes, setRoutes] = useState<Array<Route>>([]);
   const [favorites, setFavorites] = useState<Array<Favorite>>([]);
   const [refresh, setRefresh] = useState<boolean>();
+  const [difficulty, setDifficulty] = useState<string>("0");
+  const [descending, setDescending] = useState<boolean>(true);
+  const [showOld, setShowOld] = useState<boolean>(false);
   const {userInfo} = useContext(UserInfoContext);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/routes')
+    axios.get(`http://localhost:8000/api/routes?desc=${descending}&difficulty=${difficulty}&showOld=${showOld}`)
       .then(response => {
         setRoutes(response.data);
       })
@@ -53,7 +59,7 @@ function RoutesSection() {
 
     fetchData()
       .catch(console.error);
-  }, [refresh]);
+  }, [refresh, difficulty, descending, showOld]);
 
   const elements = routes.map((route: Route) =>
     <RouteCard 
@@ -74,8 +80,42 @@ function RoutesSection() {
   return (
     <Box>
       {userInfo && userInfo.isStaff ? <AddRouteCard setRefresh={setRefresh} refresh={refresh}/> : <></>}
+      <Box className="flex justify-evenly mt-4">
+        <Button 
+          variant="contained" 
+          size="small"
+          endIcon={descending ? <ExpandMoreIcon /> : <ExpandLessIcon />} 
+          onClick={() => setDescending(!descending)}
+        >
+          Ordina preferiti
+        </Button>
+        <FormControl className="w-[30%]">
+          <InputLabel id="difficultyLabel">Difficoltà</InputLabel>
+          <Select
+            labelId="difficultyLabel"
+            id="difficultyField"
+            label="Difficoltà"
+            value={difficulty}
+            className="text-black"
+            onChange={e => setDifficulty(e.target.value)}
+            >
+            <MenuItem value={0}>Tutte</MenuItem>
+            <MenuItem value={1}><DifficultyRate rating={1}/></MenuItem>
+            <MenuItem value={2}><DifficultyRate rating={2}/></MenuItem>
+            <MenuItem value={3}><DifficultyRate rating={3}/></MenuItem>
+            <MenuItem value={4}><DifficultyRate rating={4}/></MenuItem>
+            <MenuItem value={5}><DifficultyRate rating={5}/></MenuItem>
+          </Select>
+        </FormControl>
+        <FormControlLabel control={<Checkbox onChange={(e) => setShowOld(e.target.checked)}/>} label="Vecchi" />
+      </Box>
       <Box className="flex flex-col w-full mx-auto h-fit">
         {elements}
+        {elements.length == 0 && 
+          <Typography className="mt-4 text-center">
+            Nessun percorso trovato
+          </Typography>
+        }
       </Box>
     </Box>
   );

@@ -106,7 +106,7 @@ export default function RouteCard({
     <Card className="m-8 animate-in animate-out fade-in fade-out hover:scale-[101%] capitalize table">
       <CardHeader
         title={title}
-        subheader={endDate ?? "Scadenza TBD"}
+        subheader={`${new Date(endDate) < new Date() ? "Tolto il: ": "Fino al:"} ${endDate ?? "TBD"}`}
         action={<DifficultyRate rating={difficulty} />}
       />
       <CardContent>

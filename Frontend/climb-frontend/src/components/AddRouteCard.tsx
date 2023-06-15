@@ -4,13 +4,14 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import { Avatar, Box, Input, TextField } from '@mui/material';
+import { Avatar, Box, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import axios from 'axios';
 import { getAccessToken } from '../utils/auth';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import DifficultyRate from './DifficultyRate';
 
 interface AddRouteCardProps {
   readonly setRefresh : any
@@ -21,16 +22,16 @@ export default function AddRouteCard({setRefresh, refresh} : AddRouteCardProps) 
   const [error, setError] = useState(false)
   const [file, setFile] = useState<any>(null)
   const [date, setDate] = useState<Dayjs | null>(dayjs(Date()))
+  const [difficulty, setDifficulty] = useState<string>("1");
 
   async function handleAdd(): Promise<void> {
     const name = document.getElementById("titleField") as HTMLInputElement
     const description = document.getElementById("descriptionField") as HTMLInputElement
-    const difficulty = document.getElementById("difficultyField") as HTMLInputElement
 
     const formData = new FormData()
     formData.append("name", name.value)
     formData.append("description", description.value)
-    formData.append("difficulty", difficulty.value)
+    formData.append("difficulty", difficulty)
     formData.append("image", file)
     formData.append("end_date", date?.format("YYYY-MM-DD") ?? "")
 
@@ -94,7 +95,7 @@ export default function AddRouteCard({setRefresh, refresh} : AddRouteCardProps) 
           <Box className='m-4 mt-0 w-full'>
             <TextField
               id="titleField"
-              inputProps={{ maxLength: 100 }}
+              inputProps={{ maxLength: 180 }}
               label='Titolo'
               placeholder='Inserisci titolo' 
               variant="outlined"
@@ -108,7 +109,7 @@ export default function AddRouteCard({setRefresh, refresh} : AddRouteCardProps) 
             <TextField
               id="descriptionField"
               label='Descrizione'
-              inputProps={{ maxLength: 1500 }}
+              inputProps={{ maxLength: 500 }}
               placeholder='Inserisci descrizione' 
               variant="outlined"
               className='w-full'
@@ -118,41 +119,53 @@ export default function AddRouteCard({setRefresh, refresh} : AddRouteCardProps) 
             />
           </Box>
           <Box className='m-4 w-full'>
-            <Input
-              id="difficultyField"
-              type="number"
-              inputProps={{ inputMode: 'numeric', pattern: '[1-5]', max: 5 }}
-              placeholder='Inserisci difficoltà'
-              className='w-full'
-              required
-              error={error}
-            />
+            <FormControl fullWidth>
+              <InputLabel id="difficultyLabel">Difficoltà</InputLabel>
+              <Select
+                labelId="difficultyLabel"
+                id="difficultyField"
+                label="Difficoltà"
+                value={difficulty}
+                onChange={e => setDifficulty(e.target.value)}
+              >
+                <MenuItem value={1}><DifficultyRate rating={1}/></MenuItem>
+                <MenuItem value={2}><DifficultyRate rating={2}/></MenuItem>
+                <MenuItem value={3}><DifficultyRate rating={3}/></MenuItem>
+                <MenuItem value={4}><DifficultyRate rating={4}/></MenuItem>
+                <MenuItem value={5}><DifficultyRate rating={5}/></MenuItem>
+              </Select>
+            </FormControl>
           </Box>
-          <Button
-            variant="contained"
-            component="label"
-            className='m-4'
-          >
-            Upload File
-              <input
-                id="image"
-                type="file"
-                name="file"
-                hidden
-                onChange={e => handleFileUpload(e.target?.files?.[0])}
-              />
-          </Button>
-          <Typography className='!mb-4'>
-            {file?.name ?? "No file"}
-          </Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Seleziona data"
-              value={date}
-              minDate={dayjs(Date())}
-              onChange={(newValue) => setDate(newValue)}
-            />
-          </LocalizationProvider>
+          <Box className="flex !justify-evenly w-full">
+            <Box className="flex flex-col">
+              <Button
+                variant="contained"
+                component="label"
+                className='m-4'
+                size='small'
+                >
+                Immagine
+                  <input
+                    id="image"
+                    type="file"
+                    name="file"
+                    hidden
+                    onChange={e => handleFileUpload(e.target?.files?.[0])}
+                    />
+              </Button>
+              <Typography className='!mb-4 mx-auto w-full'>
+                {file?.name ?? "No file"}
+              </Typography>
+            </Box>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Seleziona data"
+                value={date}
+                minDate={dayjs(Date())}
+                onChange={(newValue) => setDate(newValue)}
+                />
+            </LocalizationProvider>
+          </Box>
         </Box>
       </CardContent>
       <CardActions>
