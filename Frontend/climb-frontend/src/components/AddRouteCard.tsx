@@ -144,14 +144,15 @@ export default function AddRouteCard({setRefresh, refresh} : AddRouteCardProps) 
                 className='m-4'
                 size='small'
                 >
-                Immagine
-                  <input
-                    id="image"
-                    type="file"
-                    name="file"
-                    hidden
-                    onChange={e => handleFileUpload(e.target?.files?.[0])}
-                    />
+                  Immagine
+                <input
+                  id="image"
+                  type="file"
+                  name="file"
+                  accept="image/*"
+                  hidden
+                  onChange={e => handleFileUpload(e.target?.files?.[0])}
+                />
               </Button>
               <Typography className='!mb-4 mx-auto w-full'>
                 {file?.name ?? "No file"}

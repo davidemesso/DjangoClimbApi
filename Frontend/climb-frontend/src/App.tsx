@@ -10,6 +10,9 @@ import ProfilePage from "./pages/ProfilePage";
 
 export interface UserInfo {
   readonly username : string,
+  readonly email : string,
+  readonly firstName : string,
+  readonly lastName : string,
   readonly isStaff : string
   readonly id : number
 }
