@@ -12,6 +12,11 @@ class GetRoutesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
         fields = ["id", "name", "difficulty", "description", "end_date", "favorites_count", "image"]
+        
+class UpdateRoutesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Route
+        fields = "__all__"
 
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:

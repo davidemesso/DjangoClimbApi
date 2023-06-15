@@ -6,7 +6,7 @@ from rest_framework import status
 from climb.utils import authentication_required
 from climb.utils import staff_required
 from .models import Favorite, News, Route
-from .serializers import FavoritesSerializer, GetNewsSerializer, GetRoutesSerializer, NewsSerializer, RoutesSerializer, UpdateNewsSerializer, UserFavoritesSerializer
+from .serializers import FavoritesSerializer, GetNewsSerializer, GetRoutesSerializer, NewsSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer
 
 class RoutesView(APIView):
     def get(self, request, *args, **kwargs):
@@ -57,6 +57,31 @@ class RoutesView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Route.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    @staff_required
+    def put(self, request, *args, **kwargs):
+        '''
+        Update the News with given data
+        '''
+        obj = Route.objects.get(pk=request.data.get('id'))
+        if(obj is None):
+            return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            'name': request.data.get('name'), 
+            'description': request.data.get('description'),
+            'id': request.data.get('id'),
+            'difficulty': obj.difficulty,
+            'end_date': obj.end_date,
+            'image': obj.image,
+        }
+        serializer = UpdateRoutesSerializer(data=data)
+        if serializer.is_valid():
+            serializer.update(obj, serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class NewsView(APIView):

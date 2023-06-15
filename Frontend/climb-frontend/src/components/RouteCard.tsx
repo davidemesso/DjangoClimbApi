@@ -105,7 +105,19 @@ export default function RouteCard({
   return (
     <Card className="m-8 animate-in animate-out fade-in fade-out hover:scale-[101%] capitalize table">
       <CardHeader
-        title={title}
+        title={
+          <Typography
+            id={"titleField"+id}
+            gutterBottom 
+            variant="h5"
+            contentEditable={editable}
+            suppressContentEditableWarning
+            className={editable ? "border-b-2 border-solid " + (error ? "border-red-500" : "") : ""}
+          >
+            {title}
+          </Typography>
+        }
+        subheaderTypographyProps={{textTransform: "none"}}
         subheader={`${new Date(endDate) < new Date() ? "Tolto il: ": "Fino al:"} ${endDate ?? "TBD"}`}
         action={<DifficultyRate rating={difficulty} />}
       />
@@ -145,9 +157,12 @@ export default function RouteCard({
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography
-            className='pb-0'
             whiteSpace="pre-wrap"
             textTransform="none"
+            contentEditable={editable}
+            id={"descriptionField"+id}
+            suppressContentEditableWarning
+            className={editable ? "border-b-2 border-solid " + (error ? "border-red-500" : "") : ""}
           >
             {description}
           </Typography>
@@ -181,18 +196,19 @@ export default function RouteCard({
             <Button size="small" variant='contained' color={editable ? "success" : "warning"} className='!mr-8'
               onClick={async () => {
                 setEditable(true)
+                setExpanded(true)
 
                 if (!editable)
                   return
 
                 const newTitle = document.getElementById("titleField" + id)?.innerText
-                const newContent = document.getElementById("contentField" + id)?.innerText
+                const newDescription = document.getElementById("descriptionField" + id)?.innerText
 
                 const success = await axios.put(
-                  'http://localhost:8000/api/news',
+                  'http://localhost:8000/api/routes',
                   {
-                    title: newTitle,
-                    content: newContent,
+                    name: newTitle,
+                    description: newDescription,
                     id: id
                   },
                   {
