@@ -1,6 +1,5 @@
 from rest_framework import  serializers
 from django.contrib.auth.models import User
-
 from climb_auth.models import Certificate
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -29,4 +28,9 @@ class UserSerializer(serializers.ModelSerializer):
 class GetAccountCertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
-        fields = "__all__"
+        fields = ["file", "expire_date"]
+
+class AccountCertificateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Certificate
+        fields = ["file", "user"]

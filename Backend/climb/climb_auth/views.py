@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from climb_auth.models import Certificate
 from climb.utils import authentication_required
-from .serializers import GetAccountCertificateSerializer, RegisterSerializer
+from .serializers import AccountCertificateSerializer, GetAccountCertificateSerializer, RegisterSerializer
 
 class RegisterView(APIView):
     def post(self, request, *args,  **kwargs):
@@ -40,15 +40,32 @@ class AccountCertificateView(APIView):
     @authentication_required
     def get(self, request):
         '''
+        Get the current user certificate
+        '''
+        user = request.user.pk
+        cert = Certificate.objects.filter(user=user).first()
+        
+        if cert is None:
+            return Response(status=status.HTTP_200_OK)
+        
+        serializer = GetAccountCertificateSerializer(cert, many=False)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    @authentication_required
+    def post(self, request):
+        '''
         Assing the route to the user favorites
         '''
         user = request.user.pk
-        cert = Certificate.objects.filter(user=user)
         
-        print(cert.count())
+        data = {
+            "file": request.data.get("file"),
+            "user": user
+        }
         
-        if cert.count() == 0:
-            return Response(data={"certificate": None}, status=status.HTTP_200_OK)
-        
-        serializer = GetAccountCertificateSerializer(cert)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        serializer = AccountCertificateSerializer(data=data)
+        if serializer.is_valid():
+            serializer.create(serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
