@@ -6,6 +6,7 @@ import { createContext, useEffect, useState } from "react";
 import { isLogged, getUserInfo } from "./utils/auth";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import ProfilePage from "./pages/ProfilePage";
 
 export interface UserInfo {
   readonly username : string,
@@ -41,6 +42,7 @@ function App() {
               <Route path="/routes" element={<RoutesSection />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
         </UserInfoContext.Provider>
       </UserContext.Provider>

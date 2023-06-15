@@ -65,11 +65,16 @@ export const login = async (username: string, password: string): Promise<boolean
 }
 
 export const getUserInfo = async (): Promise<UserInfo | null> => {  
+  const accessToken = await getAccessToken()
+
+  if(!accessToken)
+    return null
+
   const success = await axios.get(
     'http://localhost:8000/auth/account/',
     {
       headers: {
-        'authorization': 'Bearer ' + await getAccessToken()
+        'authorization': 'Bearer ' + accessToken
       }
     }
   )

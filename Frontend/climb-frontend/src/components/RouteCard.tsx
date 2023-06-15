@@ -69,12 +69,17 @@ export default function RouteCard({
   };
 
   async function handleFavorite(): Promise<void> {
+    const accessToken = await getAccessToken()
+
+    if(!accessToken)
+      return;
+
     const status = await axios.post(
       `http://localhost:8000/api/routes/${id}/favorites`,
       {},
       {
         headers: {
-          'authorization': 'Bearer ' + await getAccessToken()
+          'authorization': 'Bearer ' + accessToken
         }
       }
     ).then(data => {

@@ -34,7 +34,7 @@ export default function ClimbAppBar() {
   
   const options: { [key: string]: Function } = {
     'Profilo': () => {
-      navigate("")
+      navigate("/profile")
     }, 
     'Logout': () => {
       logout()

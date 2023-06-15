@@ -42,19 +42,23 @@ function RoutesSection() {
       });
 
     const fetchData = async () => {
+      const accessToken = await getAccessToken()
+
+      if(!accessToken)
+        return;
+
       await axios.get('http://localhost:8000/api/user/favorites',
-        {
-          headers: {
-            'authorization': 'Bearer ' + await getAccessToken()
-          }
+      {
+        headers: {
+          'authorization': 'Bearer ' + accessToken
         }
-        )
-        .then(response => {
-          setFavorites(response.data);
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      })
+      .then(response => {
+        setFavorites(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
     }
 
     fetchData()
