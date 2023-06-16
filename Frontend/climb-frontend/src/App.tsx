@@ -7,6 +7,7 @@ import { isLogged, getUserInfo } from "./utils/auth";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ProfilePage from "./pages/ProfilePage";
+import UserCertificatesSection from "./sections/UserCertificatesSection";
 
 export interface UserInfo {
   readonly username : string,
@@ -46,6 +47,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/users" element={<UserCertificatesSection />} />
             </Routes>
         </UserInfoContext.Provider>
       </UserContext.Provider>

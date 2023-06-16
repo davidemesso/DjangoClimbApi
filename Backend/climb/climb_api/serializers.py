@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Favorite, News, Route
+from django.contrib.auth.models import User
 
 class RoutesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,3 +46,11 @@ class UserFavoritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
         fields = ["route"]
+
+class GetUsersSerializer(serializers.ModelSerializer):
+    certificate_file = serializers.FileField(source='certificate.file')
+    expire_date = serializers.ReadOnlyField(source='certificate.expire_date')
+    
+    class Meta:
+        model = User
+        fields = ["id", "username", "first_name", "last_name", "certificate_file", "expire_date"]

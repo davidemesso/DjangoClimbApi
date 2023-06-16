@@ -16,26 +16,27 @@ import { useContext } from "react";
 import { UserContext } from '../App';
 import { UserInfoContext } from '../App';
 import { useNavigate } from 'react-router-dom';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 
 export default function ClimbAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const {user, setUser} = useContext(UserContext);
-  const {userInfo} = useContext(UserInfoContext);
+  const { user, setUser } = useContext(UserContext);
+  const { userInfo } = useContext(UserInfoContext);
   const navigate = useNavigate()
-  
+
   const pages: { [key: string]: string } = {
-    'Notizie': '/news', 
-    'Percorsi': '/routes', 
+    'Notizie': '/news',
+    'Percorsi': '/routes',
     'Corsi': '/courses',
     'Prezzi': '/prices',
   };
-  
+
   const options: { [key: string]: Function } = {
     'Profilo': () => {
       navigate("/profile")
-    }, 
+    },
     'Logout': () => {
       logout()
       setUser(false)
@@ -53,7 +54,7 @@ export default function ClimbAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = (callback : Function) => {
+  const handleCloseUserMenu = (callback: Function) => {
     callback()
     setAnchorElUser(null);
   };
@@ -111,17 +112,30 @@ export default function ClimbAppBar() {
               }}
             >
               {Object.entries(pages).map(([page, path]) => (
-                <MenuItem 
-                  key={page} 
+                <MenuItem
+                  key={page}
                   onClick={() => {
                     handleCloseNavMenu()
                     navigate(path)
-                  }} 
+                  }}
                   href={path}
                 >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
+              {
+                userInfo && userInfo.isStaff &&
+                <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu()
+                    navigate("/users")
+                  }}
+                  href={"/users"}
+                >
+                  <AdminPanelSettingsIcon />
+                  <Typography textAlign="center">Utenti</Typography>
+                </MenuItem>
+              }
             </Menu>
           </Box>
           <Typography
@@ -154,56 +168,67 @@ export default function ClimbAppBar() {
                 {page}
               </Button>
             ))}
+            {
+              userInfo && userInfo.isStaff &&
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                href={"/users"}
+              >
+                <AdminPanelSettingsIcon />
+                Utenti
+              </Button>
+            }
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             {
-              user 
-                ? 
+              user
+                ?
                 <>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu}>
-                    <Avatar className="!bg-blue-700 capitalize">
-                      {userInfo && userInfo.username[0]}
-                    </Avatar>
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={() => handleCloseUserMenu(() => {})}
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu}>
+                      <Avatar className="!bg-blue-700 capitalize">
+                        {userInfo && userInfo.username[0]}
+                      </Avatar>
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={() => handleCloseUserMenu(() => { })}
                   >
-                  {Object.entries(options).map(([option, callback]) => (
-                    <MenuItem 
-                      key={option} 
-                      onClick={() => handleCloseUserMenu(callback)}
-                    >
-                      <Typography textAlign="center">{option}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
+                    {Object.entries(options).map(([option, callback]) => (
+                      <MenuItem
+                        key={option}
+                        onClick={() => handleCloseUserMenu(callback)}
+                      >
+                        <Typography textAlign="center">{option}</Typography>
+                      </MenuItem>
+                    ))}
+                  </Menu>
                 </>
-                : <Button 
-                    color="inherit"
-                    onClick={() => navigate("/login")}
-                  >
-                    Login
-                  </Button>
+                : <Button
+                  color="inherit"
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </Button>
             }
           </Box>
         </Toolbar>
-        </Container>
-        </AppBar>
-      );
-    }
+      </Container>
+    </AppBar>
+  );
+}

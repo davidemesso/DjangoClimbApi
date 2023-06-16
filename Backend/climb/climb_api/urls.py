@@ -4,6 +4,7 @@ from .views import (
     NewsView,
     RoutesView,
     UserFavoritesView,
+    UsersView,
 )
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path('news', NewsView.as_view()),
     path('routes/<int:id>/favorites', FavoritesView.as_view()),
     path('user/favorites', UserFavoritesView.as_view()),
+    path('users/', UsersView.as_view()),
 ]

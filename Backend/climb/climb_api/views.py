@@ -6,7 +6,8 @@ from rest_framework import status
 from climb.utils import authentication_required
 from climb.utils import staff_required
 from .models import Favorite, News, Route
-from .serializers import FavoritesSerializer, GetNewsSerializer, GetRoutesSerializer, NewsSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer
+from django.contrib.auth.models import User
+from .serializers import FavoritesSerializer, GetNewsSerializer, GetRoutesSerializer, GetUsersSerializer, NewsSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer
 
 class RoutesView(APIView):
     def get(self, request, *args, **kwargs):
@@ -185,3 +186,26 @@ class FavoritesView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UsersView(APIView):
+    @staff_required
+    def get(self, request):
+        '''
+        Get the users list
+        '''
+        users = User.objects\
+            .filter(is_staff=False)\
+            .select_related("certificate")
+            
+        data = []
+        
+        for user in users:
+            data.append({
+                "id": user.pk,
+                "username": user.username,
+                "firstName": user.first_name,
+                "lastName": user.last_name,
+            })
+        
+        serializer = GetUsersSerializer(users, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

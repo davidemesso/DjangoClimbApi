@@ -1,6 +1,5 @@
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
-from django.contrib.auth.models import User
 from climb_auth.models import Certificate
 from climb.utils import authentication_required
 from .serializers import AccountCertificateSerializer, GetAccountCertificateSerializer, RegisterSerializer
