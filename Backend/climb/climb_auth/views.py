@@ -54,7 +54,7 @@ class AccountCertificateView(APIView):
     @authentication_required
     def post(self, request):
         '''
-        Assing the route to the user favorites
+        Insert a new certificate for the current user
         '''
         user = request.user.pk
         
@@ -69,3 +69,15 @@ class AccountCertificateView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @authentication_required
+    def delete(self, request):
+        '''
+        Delete the certificate for the current user
+        '''
+        try:
+            obj = Certificate.objects.get(pk=request.data.get('id'))
+            obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Certificate.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

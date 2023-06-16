@@ -8,5 +8,5 @@ class Certificate(models.Model):
         return f"certificates/{instance.user.pk}/{filename}"
 
     file = models.FileField(upload_to=file_upload_to)
-    expire_date = models.DateTimeField(default=timezone.now() + timedelta(days=365))
+    expire_date = models.DateField(default=timezone.now() + timedelta(days=365))
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="certificate")

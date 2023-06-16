@@ -28,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
 class GetAccountCertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
-        fields = ["file", "expire_date"]
+        fields = ["file", "expire_date", "id"]
 
 class AccountCertificateSerializer(serializers.ModelSerializer):
     class Meta:
