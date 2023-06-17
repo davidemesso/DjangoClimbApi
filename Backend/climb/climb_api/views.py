@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from climb.utils import authentication_required
 from climb.utils import staff_required
-from .models import Favorite, News, Route
+from .models import Favorite, News, Price, Route
 from django.contrib.auth.models import User
-from .serializers import FavoritesSerializer, GetNewsSerializer, GetRoutesSerializer, GetUsersSerializer, NewsSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer
+from .serializers import FavoritesSerializer, GetNewsSerializer, GetPricesSerializer, GetRoutesSerializer, GetUsersSerializer, NewsSerializer, PricesSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer
 
 class RoutesView(APIView):
     def get(self, request, *args, **kwargs):
@@ -209,3 +209,45 @@ class UsersView(APIView):
         
         serializer = GetUsersSerializer(users, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class PricesView(APIView):
+    def get(self, request, *args, **kwargs):
+        '''
+        List all the Prices
+        '''
+        news = Price.objects\
+            .all()
+            
+        serializer = GetPricesSerializer(news, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @staff_required
+    def post(self, request, *args, **kwargs):
+        '''
+        Create the Price with given data
+        '''
+        data = {
+            'article': request.data.get('article'), 
+            'price': request.data.get('price'),
+        }
+        
+        serializer = PricesSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @staff_required
+    def delete(self, request, *args, **kwargs):
+        '''
+        Delete the Price
+        '''
+        try:
+            obj = Price.objects.get(pk=request.data.get('id'))
+            obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Price.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

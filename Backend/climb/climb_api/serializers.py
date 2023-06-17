@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Favorite, News, Route
+from .models import Favorite, News, Price, Route
 from django.contrib.auth.models import User
 
 class RoutesSerializer(serializers.ModelSerializer):
@@ -54,3 +54,13 @@ class GetUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "first_name", "last_name", "certificate_file", "expire_date"]
+        
+class PricesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Price
+        fields = ["article", "price"]
+
+class GetPricesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Price
+        fields = "__all__"

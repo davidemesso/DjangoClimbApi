@@ -1,11 +1,10 @@
-import { Box, Card, CardContent, IconButton, Input, TextField } from '@mui/material';
+import { Box, Card, CardContent, IconButton, TextField, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserInfoContext } from '../App';
 import { getAccessToken, getUserInfo } from '../utils/auth';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import axios from 'axios';
 
@@ -18,26 +17,49 @@ interface PriceRow {
 
 export default function AdminPriceTable() {
   const [prices, setPrices] = useState<Array<PriceRow>>([])
-  const [editable, setEditable] = useState<number>(0)
+  const [refresh, setRefresh] = useState<boolean>(false)
   const {userInfo} = useContext(UserInfoContext)
   const navigate = useNavigate()
   
   const columns: GridColDef[] = [
-    { field: 'price', headerName: 'Prezzo', width: 120 },
+    { field: 'price', headerName: 'Prezzo', width: 120,
+      renderCell: (params) => 
+        <Typography>
+          {"€ " + params.row.price}
+        </Typography>
+    },
     { field: 'article', headerName: 'Articolo', width: 600 },
     {
       field: 'actions', 
-      headerName: 'Azioni', 
+      headerName: 'Cancella', 
       width: 120, 
       sortable: false ,
       renderCell: (params) => {
         return (
           <Box>
-            <IconButton onClick={() => setEditable(params.row.id)}>
-              <EditIcon/>
-            </IconButton>
-            <IconButton>
-              <DeleteIcon />
+            <IconButton onClick={async () => {
+              const accessToken = await getAccessToken()
+              if (!accessToken)
+                return;
+
+              await axios.delete(
+                'http://localhost:8000/api/prices',
+                {
+                  data: {
+                    id: params.row.id
+                  },
+                  headers: {
+                    'authorization': 'Bearer ' + accessToken
+                  }
+                })
+                .then(_ => {
+                  setRefresh(!refresh)
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+            }}>
+              <DeleteIcon color="error" />
             </IconButton>
           </Box>
         )
@@ -52,28 +74,18 @@ export default function AdminPriceTable() {
       if (userInfo == null || !userInfo.isStaff)
         return navigate("/")
 
-      const accessToken = await getAccessToken()
-      if (!accessToken)
-        return;
-
-      // TODO get callback
-      await axios.get('http://localhost:8000/api/users/',
-        {
-          headers: {
-            'authorization': 'Bearer ' + accessToken
-          }
-        })
-        .then(response => {
-          setPrices(response.data)
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      await axios.get('http://localhost:8000/api/prices')
+      .then(response => {
+        setPrices(response.data)
+      })
+      .catch(error => {
+        console.error(error);
+      });
     }
 
     fetchData()
       .catch(console.error);
-  }, []);
+  }, [refresh]);
 
   if (!userInfo)
     return <></>
@@ -81,7 +93,7 @@ export default function AdminPriceTable() {
   return (
     <Card className="w-[90%] mx-auto m-2">
       <CardContent>
-        <Box className="flex mb-4 justify-evenly">
+        <Box className="flex mb-4 justify-around">
           <TextField
             inputProps={{ maxLength: 100 }}
             id="articleField"
@@ -98,11 +110,28 @@ export default function AdminPriceTable() {
           />
           <IconButton 
             className='!p-4'
-            onClick={() => {
+            onClick={async () => {
               const article = document.getElementById("articleField") as HTMLInputElement
               const price = document.getElementById("priceField") as HTMLInputElement
               
-              // TODO saving callback
+              const accessToken = await getAccessToken()
+              if (!accessToken)
+                return;
+
+              await axios.post('http://localhost:8000/api/prices',
+              {article: article.value, price: price.value},
+              {
+                headers: {
+                  'authorization': 'Bearer ' + accessToken
+                }
+              })
+              .then(response => {
+                setPrices(response.data)
+                setRefresh(!refresh)
+              })
+              .catch(error => {
+                console.error(error);
+              });
             }} 
           >
             <SaveIcon />

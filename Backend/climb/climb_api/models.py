@@ -27,3 +27,10 @@ class News(models.Model):
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="favorites")
+
+class Price(models.Model):
+    article = models.CharField(max_length = 100)
+    price = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.article
