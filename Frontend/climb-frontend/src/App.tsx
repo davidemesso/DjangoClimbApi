@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ProfilePage from "./pages/ProfilePage";
 import UserCertificatesSection from "./sections/UserCertificatesSection";
+import PricesSection from "./sections/PricesSection";
 
 export interface UserInfo {
   readonly username : string,
@@ -44,6 +45,7 @@ function App() {
               <Route path ="/" element={<NewsSection />} />
               <Route path ="/news" element={<NewsSection />} />
               <Route path="/routes" element={<RoutesSection />} />
+              <Route path="/prices" element={<PricesSection />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/profile" element={<ProfilePage />} />

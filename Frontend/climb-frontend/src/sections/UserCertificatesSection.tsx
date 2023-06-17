@@ -62,7 +62,7 @@ const columns: GridColDef[] = [
   { field: 'expire_date', headerName: 'Scadenza', width: 120 },
 ];
 
-export default function DataTable() {
+export default function UserCertificatesSection() {
   const [users, setUsers] = useState<Array<UserRow>>([])
   const {userInfo} = useContext(UserInfoContext)
   const navigate = useNavigate()
@@ -111,6 +111,7 @@ export default function DataTable() {
             },
           }}
           pageSizeOptions={[10, 25, 50]}
+          disableRowSelectionOnClick
         />
       </CardContent>
     </Card>
