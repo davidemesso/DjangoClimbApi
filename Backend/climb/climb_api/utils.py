@@ -12,4 +12,4 @@ def average_favorites_routes_difficulty(user):
     if result is None:
         return -1
     
-    return average_difficulty["avg_difficulty"]
+    return result
