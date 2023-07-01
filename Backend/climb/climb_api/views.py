@@ -260,14 +260,14 @@ class RecommendedRoutesView(APIView):
         '''
         Gets the recommended routes based on user
         '''
-        target_difficulty = average_favorites_routes_difficulty(request)
+        target_difficulty = average_favorites_routes_difficulty(request.user)
         
         routes = Route.objects\
             .all()\
             .filter(end_date__gte=timezone.now())\
             .annotate(favorites_count=Count("favorites"))
             
-        if target_difficulty:
+        if target_difficulty > 0:
             routes = routes\
                 .annotate(abs_difficulty=Func(F('difficulty') - float(target_difficulty), function='ABS'))\
                 .filter(abs_difficulty__lte=2)\
@@ -285,9 +285,9 @@ class AverageDifficultyView(APIView):
         '''
         Gets current user average difficulty
         '''
-        target_difficulty = average_favorites_routes_difficulty(request)
+        target_difficulty = average_favorites_routes_difficulty(request.user)
         
-        if not target_difficulty:
+        if not target_difficulty or target_difficulty < 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         return Response(target_difficulty)
