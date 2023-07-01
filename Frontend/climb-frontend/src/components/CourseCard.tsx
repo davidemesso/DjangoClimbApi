@@ -1,4 +1,4 @@
-import { Box, Button, CardActions, TextField } from '@mui/material';
+import { Box, Button, CardActions, TextField, Tooltip } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -10,6 +10,7 @@ import { useContext, useState } from 'react';
 import { UserInfoContext } from '../App';
 import axios from 'axios';
 import { getAccessToken } from '../utils/auth';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 
 interface CourseCardProps {
   readonly title: string;
@@ -21,12 +22,16 @@ interface CourseCardProps {
   readonly maxPeople: number;
   readonly setRefresh : any;
   readonly refresh : any;
+  readonly participantsCount : number;
+  readonly participations : Array<number>;
 }
 
-export default function CourseCard({title, description, date, username, id, price, maxPeople, setRefresh, refresh} : CourseCardProps) {
+export default function CourseCard({title, description, date, username, id, price, maxPeople, participantsCount, participations, setRefresh, refresh} : CourseCardProps) {
   const {userInfo} = useContext(UserInfoContext);
   const [editable, setEditable] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>()
+  const [participants, setParticipants] = useState<Array<any>>([])
   
   return (
     <Card className="m-8 animate-in animate-out fade-in fade-out hover:scale-[101%] capitalize">
@@ -63,14 +68,17 @@ export default function CourseCard({title, description, date, username, id, pric
           {price} €
         </Typography>
         <Box className="flex flex-col mt-2">
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" textTransform="none">
             {date?.toString()}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" textTransform="none">
             Tenuto da {username}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" textTransform="none">
             Massimo {maxPeople} iscritti
+          </Typography>
+          <Typography variant="body2" color="text.secondary" textTransform="none">
+            {maxPeople - participantsCount} posti rimasti
           </Typography>
           {
             editable &&
@@ -175,6 +183,86 @@ export default function CourseCard({title, description, date, username, id, pric
                 }
               </CardActions>
             : <></>
+          }
+          <Tooltip title={!userInfo && "Accedi per poter partecipare"}>
+            <Box className="w-[40%] !mt-4">
+              <Button size="small" variant='contained' color="primary"
+                disabled={!userInfo || (maxPeople - participantsCount <= 0 && !participations.includes(id))}
+                onClick={async () => {
+                  
+                  const accessToken = await getAccessToken()
+                  if (!accessToken)
+                  return;
+                  
+                  setErrorMessage("")
+                  await axios.post(
+                    `http://localhost:8000/courses/${id}/participation`, 
+                    {},
+                    {
+                      headers: {
+                        'authorization': 'Bearer ' + accessToken
+                      }
+                    })
+                    .then(_ => {
+                      setRefresh(!refresh)
+                    })
+                    .catch(error => {
+                      if (error.response.status == 400)
+                        setErrorMessage("Partecipi già a questo corso")
+
+                      if (error.response.status == 403)
+                        setErrorMessage("Sono esauriti i posti")
+                    });
+                }}
+              >
+                  <AddTaskIcon className='p-1' />
+                  {!participations.includes(id) ? "Partecipa" : "Annulla partecipazione"}
+              </Button>
+            </Box>
+          </Tooltip>
+          {
+            userInfo && userInfo.isStaff &&
+            <Box className="w-[40%] !mt-4">
+              <Button size="small" variant='contained' color="primary"
+                onClick={async () => {
+                  
+                  const accessToken = await getAccessToken()
+                  if (!accessToken)
+                  return;
+                  
+                  await axios.get(
+                    `http://localhost:8000/courses/${id}/participation`,
+                    {
+                      headers: {
+                        'authorization': 'Bearer ' + accessToken
+                      }
+                    })
+                    .then(response => {
+                      setParticipants(response.data)
+                      console.log(response.data)
+                    })
+                    .catch(error => {
+                      console.log(error)
+                    });
+                  }}
+                  >
+                  Visualizza partecipanti
+              </Button>
+            </Box>
+          }
+          <Typography textTransform={"none"} className='text-red-500 !m-2'>
+            {errorMessage}
+          </Typography>
+          {
+            participants.length != 0 && participants.map(p =>
+              <Typography 
+                textTransform={"none"} 
+                className='!m-2'
+                key={p.username}
+              >
+                {p.username}
+              </Typography>
+            )
           }
         </Box>
       </CardContent>
