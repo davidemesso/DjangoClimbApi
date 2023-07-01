@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,18 +11,37 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { logout } from '../utils/auth';
+import { useContext } from "react";
+import { UserContext } from '../App';
+import { UserInfoContext } from '../App';
+import { useNavigate } from 'react-router-dom';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
-const pages: { [key: string]: string } = {
-  'Notizie': '/news', 
-  'Percorsi': '/routes', 
-  'Corsi': '/courses',
-  'Prezzi': '/prices',
-};
-const settings : Array<string> = ['Profilo', 'Logout'];
 
-function ClimbAppBar() {
+export default function ClimbAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const { user, setUser } = useContext(UserContext);
+  const { userInfo } = useContext(UserInfoContext);
+  const navigate = useNavigate()
+
+  const pages: { [key: string]: string } = {
+    'Notizie': '/news',
+    'Percorsi': '/routes',
+    'Corsi': '/courses',
+    'Prezzi': '/prices',
+  };
+
+  const options: { [key: string]: Function } = {
+    'Profilo': () => {
+      navigate("/profile")
+    },
+    'Logout': () => {
+      logout()
+      setUser(false)
+    }
+  };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -35,12 +54,13 @@ function ClimbAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (callback: Function) => {
+    callback()
     setAnchorElUser(null);
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ background: '#0080FF' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -48,6 +68,7 @@ function ClimbAppBar() {
             noWrap
             component="a"
             href="/"
+            onClick={() => navigate("/")}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -91,10 +112,43 @@ function ClimbAppBar() {
               }}
             >
               {Object.entries(pages).map(([page, path]) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu} href={path}>
+                <MenuItem
+                  key={page}
+                  onClick={() => {
+                    handleCloseNavMenu()
+                    navigate(path)
+                  }}
+                  href={path}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
+              {
+                userInfo && userInfo.isStaff &&
+                <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu()
+                    navigate("/users")
+                  }}
+                  href={"/users"}
+                >
+                  <AdminPanelSettingsIcon />
+                  <Typography textAlign="center">Utenti</Typography>
+                </MenuItem>
+              }
+              {
+                userInfo && userInfo.isAdmin &&
+                <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu()
+                    navigate("/admin")
+                  }}
+                  href={"/admin"}
+                >
+                  <AdminPanelSettingsIcon />
+                  <Typography textAlign="center">Staff</Typography>
+                </MenuItem>
+              }
             </Menu>
           </Box>
           <Typography
@@ -102,6 +156,7 @@ function ClimbAppBar() {
             noWrap
             component="a"
             href=""
+            onClick={() => navigate("/")}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -126,40 +181,78 @@ function ClimbAppBar() {
                 {page}
               </Button>
             ))}
+            {
+              userInfo && userInfo.isStaff &&
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                href={"/users"}
+              >
+                <AdminPanelSettingsIcon />
+                Utenti
+              </Button>
+            }
+            {
+              userInfo && userInfo.isAdmin &&
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                href={"/admin"}
+              >
+                <AdminPanelSettingsIcon />
+                Staff
+              </Button>
+            }
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            {
+              user
+                ?
+                <>
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu}>
+                      <Avatar className="!bg-blue-700 capitalize">
+                        {userInfo && userInfo.username[0]}
+                      </Avatar>
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={() => handleCloseUserMenu(() => { })}
+                  >
+                    {Object.entries(options).map(([option, callback]) => (
+                      <MenuItem
+                        key={option}
+                        onClick={() => handleCloseUserMenu(callback)}
+                      >
+                        <Typography textAlign="center">{option}</Typography>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+                : <Button
+                  color="inherit"
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </Button>
+            }
           </Box>
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
-export default ClimbAppBar;
