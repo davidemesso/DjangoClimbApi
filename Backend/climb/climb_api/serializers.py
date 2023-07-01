@@ -54,6 +54,11 @@ class GetUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "first_name", "last_name", "certificate_file", "expire_date"]
+
+class GetUsersStaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username"]
         
 class PricesSerializer(serializers.ModelSerializer):
     class Meta:

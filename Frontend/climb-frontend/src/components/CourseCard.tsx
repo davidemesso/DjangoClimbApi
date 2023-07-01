@@ -1,4 +1,4 @@
-import { Box, Button, CardActions } from '@mui/material';
+import { Box, Button, CardActions, TextField } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -13,15 +13,17 @@ import { getAccessToken } from '../utils/auth';
 
 interface CourseCardProps {
   readonly title: string;
-  readonly content: string;
-  readonly insertDate: Date;
+  readonly description: string;
+  readonly date: Date;
   readonly username: string;
   readonly id: number;
+  readonly price: number;
+  readonly maxPeople: number;
   readonly setRefresh : any;
   readonly refresh : any;
 }
 
-export default function CourseCard({title, content, insertDate, username, id, setRefresh, refresh} : CourseCardProps) {
+export default function CourseCard({title, description, date, username, id, price, maxPeople, setRefresh, refresh} : CourseCardProps) {
   const {userInfo} = useContext(UserInfoContext);
   const [editable, setEditable] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
@@ -41,31 +43,63 @@ export default function CourseCard({title, content, insertDate, username, id, se
         >
           {title}
         </Typography>
-        <Typography id={"contentField"+id} 
+        <Typography id={"descriptionField"+id} 
           contentEditable={editable} 
           suppressContentEditableWarning={true} 
-          variant="body2"
+          variant="body1"
           whiteSpace="pre-wrap"
           textTransform="none"
           color={error? "red" : "text.primary"}
           className={editable ? "border-b-2 border-solid " + (error ? "border-red-500" : "") : ""}
         >
-          {content}
+          {description}
+        </Typography>
+        <Typography
+          variant="body2"
+          whiteSpace="pre-wrap"
+          textTransform="none"
+          color="text.primary"
+        >
+          {price} €
         </Typography>
         <Box className="flex flex-col mt-2">
           <Typography variant="body2" color="text.secondary">
-            {insertDate?.toString()}
+            {date?.toString()}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {username}
+            Tenuto da {username}
           </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Massimo {maxPeople} iscritti
+          </Typography>
+          {
+            editable &&
+            <Box className="p-8">
+              <TextField 
+                id={"priceField"+id}
+                label='Prezzo'
+                placeholder='Inserisci prezzo' 
+                defaultValue={price}
+                error={error}
+                InputProps={{ type:'number', inputProps: { min: 0 } }} 
+                />
+              <TextField 
+                id={"maxPeopleField"+id}
+                label='Iscritti massimi'
+                placeholder='Inserisci massimo iscrizioni' 
+                defaultValue={maxPeople}
+                error={error}
+                InputProps={{ type:'number', inputProps: { min: 0 } }} 
+              />
+            </Box>
+          }
           {
             userInfo && userInfo.isStaff
             ? <CardActions className='flex flex-row-reverse'>
                 <Button size="small" variant='contained' color="error"
                   onClick={async () => {
                     await axios.delete(
-                      'http://localhost:8000/courses', 
+                      'http://localhost:8000/courses/', 
                       { 
                         data: {
                           id: id
@@ -92,14 +126,18 @@ export default function CourseCard({title, content, insertDate, username, id, se
                       return
 
                     const newTitle = document.getElementById("titleField"+id)?.innerText
-                    const newContent = document.getElementById("contentField"+id)?.innerText
+                    const newDescription = document.getElementById("descriptionField"+id)?.innerText
+                    const newPrice = document.getElementById("priceField"+id) as HTMLInputElement
+                    const newMaxPeople = document.getElementById("maxPeopleField"+id) as HTMLInputElement
 
                     const success = await axios.put(
-                      'http://localhost:8000/courses',
+                      'http://localhost:8000/courses/',
                       { 
                         title: newTitle,
-                        content: newContent,
-                        id: id
+                        description: newDescription,
+                        id: id,
+                        price: newPrice.value,
+                        max_people: newMaxPeople.value
                       },
                       {
                         headers: {

@@ -4,31 +4,70 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import { Avatar, Box, TextField } from '@mui/material';
-import { useContext, useState } from 'react';
-import { UserInfoContext } from '../App';
+import { Autocomplete, Avatar, Box, TextField } from '@mui/material';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getAccessToken } from '../utils/auth';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface AddCourseCardProps {
   readonly setRefresh : any
   readonly refresh : any
 }
 
+interface StaffMember {
+  readonly id : number
+  readonly username: string
+}
+
 export default function AddCourseCard({setRefresh, refresh} : AddCourseCardProps) {
   const [error, setError] = useState(false)
-  const {userInfo} = useContext(UserInfoContext);  
+  const [staff, setStaff] = useState<Array<StaffMember>>([])
+  const [selectedStaff, setSelectedStaff] = useState<number>()
+  const [date, setDate] = useState<Dayjs | null>(dayjs(Date()))
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const accessToken = await getAccessToken()
+
+      if (!accessToken)
+        return;
+
+      await axios.get('http://localhost:8000/api/users/staff',
+      {
+        headers: {
+          'authorization': 'Bearer ' + accessToken
+        }
+      })
+      .then(response => {
+        setStaff(response.data)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    }
+
+    fetchData()
+      .catch(console.error);
+  }, []);
 
   async function handleAddCourse(): Promise<void> {
     const title = document.getElementById("titleField") as HTMLInputElement
-    const content = document.getElementById("contentField") as HTMLInputElement
+    const description = document.getElementById("descriptionField") as HTMLInputElement
+    const maxPeople = document.getElementById("maxPeopleField") as HTMLInputElement
+    const price = document.getElementById("priceField") as HTMLInputElement
 
     const success = await axios.post(
-      'http://localhost:8000/courses',
+      'http://localhost:8000/courses/',
       {
         "title": title.value,
-        "content": content.value,
-        "posted_by": userInfo.id,
+        "description": description.value,
+        "held_by": selectedStaff,
+        "max_people": maxPeople.value,
+        "date": date ?? "",
+        "price": price.value,
       },
       {
         headers: {
@@ -55,10 +94,11 @@ export default function AddCourseCard({setRefresh, refresh} : AddCourseCardProps
 
   function handleClear(): void {
     const title = document.getElementById("titleField") as HTMLInputElement
-    const content = document.getElementById("contentField") as HTMLInputElement
+    const description = document.getElementById("descriptionField") as HTMLInputElement
 
     title.value = ""
-    content.value = ""
+    description.value = ""
+    setDate(dayjs(Date()))
   }
 
   return (
@@ -86,17 +126,52 @@ export default function AddCourseCard({setRefresh, refresh} : AddCourseCardProps
               error={error}
             />
           </Box>
-          <Box className='m-4 mb-0 w-full'>
+          <Box className='m-4 mt-0 w-full'>
             <TextField
-              id="contentField"
-              label='Contenuto'
+              id="descriptionField"
+              label='Descrizione'
               inputProps={{ maxLength: 1500 }}
-              placeholder='Inserisci contenuto' 
+              placeholder='Inserisci descrizione' 
               variant="outlined"
               className='w-full'
               required 
               multiline
               error={error}
+            />
+          </Box>
+          <Autocomplete
+            isOptionEqualToValue={(option, value) => option.label == value.label}
+            disablePortal
+            fullWidth
+            id="staffField"
+            onChange={(_, value) => setSelectedStaff(value?.id)}
+            options={staff.map(user => {
+              return {label: user.username, id: user.id}
+            })}
+            renderInput={(params) => <TextField {...params} label="Staff" />}
+          />
+          <Box className="my-4 flex justify-between w-full">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                label="Seleziona data"
+                value={date}
+                minDate={dayjs(Date())}
+                onChange={(newValue) => setDate(newValue)}
+                />
+            </LocalizationProvider>
+            <TextField 
+              id="priceField"
+              label='Prezzo'
+              placeholder='Inserisci prezzo' 
+              error={error}
+              InputProps={{ type:'number', inputProps: { min: 0 } }} 
+              />
+            <TextField 
+              id="maxPeopleField"
+              label='Iscritti massimi'
+              placeholder='Inserisci massimo iscrizioni' 
+              error={error}
+              InputProps={{ type:'number', inputProps: { min: 0 } }} 
             />
           </Box>
         </Box>

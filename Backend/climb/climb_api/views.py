@@ -9,7 +9,7 @@ from climb.utils import staff_required
 from .models import Favorite, News, Price, Route
 from django.contrib.auth.models import User
 from django.db.models import F, Func
-from .serializers import FavoritesSerializer, GetNewsSerializer, GetPricesSerializer, GetRoutesSerializer, GetUsersSerializer, NewsSerializer, PricesSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer
+from .serializers import FavoritesSerializer, GetNewsSerializer, GetPricesSerializer, GetRoutesSerializer, GetUsersSerializer, NewsSerializer, PricesSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer, GetUsersStaffSerializer
 
 class RoutesView(APIView):
     def get(self, request, *args, **kwargs):
@@ -209,6 +209,26 @@ class UsersView(APIView):
             })
         
         serializer = GetUsersSerializer(users, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class UsersStaffView(APIView):
+    @staff_required
+    def get(self, request):
+        '''
+        Get the users list
+        '''
+        users = User.objects\
+            .filter(is_staff=True)\
+            
+        data = []
+        
+        for user in users:
+            data.append({
+                "id": user.pk,
+                "username": user.username,
+            })
+        
+        serializer = GetUsersStaffSerializer(users, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 

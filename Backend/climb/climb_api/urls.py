@@ -19,4 +19,5 @@ urlpatterns = [
     path('routes/<int:id>/favorites', FavoritesView.as_view()),
     path('user/favorites', UserFavoritesView.as_view()),
     path('users/', UsersView.as_view()),
+    path('users/staff', UsersView.as_view()),
 ]

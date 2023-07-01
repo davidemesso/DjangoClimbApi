@@ -7,10 +7,12 @@ import CourseCard from "../components/CourseCard";
 
 interface Course {
   readonly title: string;
-  readonly content: string;
-  readonly insert_date: Date;
+  readonly description: string;
+  readonly date: Date;
   readonly username: string;
   readonly id: number;
+  readonly price: number;
+  readonly max_people: number;
 }
 
 function CoursesSection() {
@@ -19,7 +21,7 @@ function CoursesSection() {
   const {userInfo} = useContext(UserInfoContext);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/courses')
+    axios.get('http://localhost:8000/courses/')
       .then(response => {
         setCourses(response.data);
       })
@@ -32,10 +34,12 @@ function CoursesSection() {
     <CourseCard 
       key={course.title + Math.random()}
       title={course.title}
-      content={course.content}
-      insertDate={course.insert_date}
+      description={course.description}
+      date={course.date}
       username={course.username}
       id={course.id}
+      price={course.price}
+      maxPeople={course.max_people}
       setRefresh={setRefresh} 
       refresh={refresh}
     />
