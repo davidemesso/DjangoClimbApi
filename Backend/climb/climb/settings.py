@@ -35,9 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'climb_api',
     'corsheaders',
+    'climb_api',
     'climb_auth',
+    'climb_admin',
 ]
 
 MIDDLEWARE = [
