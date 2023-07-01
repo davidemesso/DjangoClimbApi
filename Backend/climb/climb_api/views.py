@@ -63,7 +63,7 @@ class RoutesView(APIView):
     @staff_required
     def put(self, request, *args, **kwargs):
         '''
-        Update the News with given data
+        Update the Route with given data
         '''
         obj = Route.objects.get(pk=request.data.get('id'))
         if(obj is None):

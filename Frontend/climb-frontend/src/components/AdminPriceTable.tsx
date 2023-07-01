@@ -18,6 +18,7 @@ interface PriceRow {
 export default function AdminPriceTable() {
   const [prices, setPrices] = useState<Array<PriceRow>>([])
   const [refresh, setRefresh] = useState<boolean>(false)
+  const [error, setError] = useState<boolean>(false)
   const {userInfo} = useContext(UserInfoContext)
   const navigate = useNavigate()
   
@@ -100,17 +101,20 @@ export default function AdminPriceTable() {
             label='Articolo'
             placeholder='Inserisci articolo' 
             variant="outlined"
+            error={error}
             required
           />
           <TextField 
             id="priceField"
             label='Prezzo'
             placeholder='Inserisci prezzo' 
+            error={error}
             InputProps={{ type:'number', inputProps: { min: 0 } }} 
           />
           <IconButton 
             className='!p-4'
             onClick={async () => {
+              setError(false);
               const article = document.getElementById("articleField") as HTMLInputElement
               const price = document.getElementById("priceField") as HTMLInputElement
               
@@ -129,8 +133,8 @@ export default function AdminPriceTable() {
                 setPrices(response.data)
                 setRefresh(!refresh)
               })
-              .catch(error => {
-                console.error(error);
+              .catch(_ => {
+                setError(true);
               });
             }} 
           >

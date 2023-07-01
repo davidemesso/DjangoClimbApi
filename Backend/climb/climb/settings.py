@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'climb_api',
     'climb_auth',
     'climb_admin',
+    'climb_courses',
 ]
 
 MIDDLEWARE = [
