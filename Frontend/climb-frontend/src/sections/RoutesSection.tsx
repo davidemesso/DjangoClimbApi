@@ -4,8 +4,8 @@ import RouteCard from "../components/RouteCard";
 import { getAccessToken } from "../utils/auth";
 import { Box, Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { UserInfoContext } from "../App";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddRouteCard from "../components/AddRouteCard";
 import DifficultyRate from "../components/DifficultyRate";
 
@@ -88,7 +88,7 @@ function RoutesSection() {
         <Button 
           variant="contained" 
           size="small"
-          endIcon={descending ? <ExpandMoreIcon /> : <ExpandLessIcon />} 
+          endIcon={descending ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />} 
           onClick={() => setDescending(!descending)}
         >
           Ordina preferiti
