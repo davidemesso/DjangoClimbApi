@@ -5,7 +5,7 @@ import { Avatar, Box, Typography, Card, CardContent, Button } from '@mui/materia
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import Brightness1Icon from '@mui/icons-material/Brightness1';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getAccessToken } from '../utils/auth';
+import { getAccessToken, getUserInfo } from '../utils/auth';
 import axios from 'axios';
 import { BACKEND_URL } from '../utils/urls';
 
@@ -22,10 +22,11 @@ export default function ProfilePage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (userInfo == null)
-      navigate("/")
-
     const fetchData = async () => {
+      const userInfo = await getUserInfo()
+      if (userInfo == null)
+        return navigate("/")
+        
       const accessToken = await getAccessToken()
 
       if (!accessToken)

@@ -27,6 +27,7 @@ class AccountView(APIView):
             {
                 "username": request.user.username,
                 "isStaff": request.user.is_staff,
+                "isAdmin": request.user.is_superuser,
                 "email": request.user.email,
                 "firstName": request.user.first_name,
                 "lastName": request.user.last_name,

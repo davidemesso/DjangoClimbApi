@@ -110,7 +110,7 @@ export const register = async (
   username: string,
   name: string,
   surname: string,
-  password: string,
+  password: string
 ) : Promise<boolean> => {  
   const loginData = { 
     "email": email, 
@@ -123,6 +123,45 @@ export const register = async (
   const success = await axios.post(
     'http://localhost:8000/auth/register/',
     loginData
+  )
+  .then(_ => {
+    return true
+  })
+  .catch(_ => {
+    return false
+  })
+
+  return success
+}
+
+export const registerStaff = async (
+  email: string, 
+  username: string,
+  name: string,
+  surname: string,
+  password: string
+) : Promise<boolean> => {  
+  const loginData = { 
+    "email": email, 
+    "username": username, 
+    "first_name": name, 
+    "last_name": surname, 
+    "password": password 
+  }
+
+  const accessToken = await getAccessToken()
+
+  if(!accessToken)
+    return false
+  
+  const success = await axios.post(
+    'http://localhost:8000/admins/register/',
+    loginData,
+    {
+      headers: {
+        'authorization': 'Bearer ' + accessToken
+      }
+    }
   )
   .then(_ => {
     return true

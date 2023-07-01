@@ -60,6 +60,8 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
+
 CORS_ALLOW_CREDENTIALS = False
 
 ROOT_URLCONF = 'climb.urls'

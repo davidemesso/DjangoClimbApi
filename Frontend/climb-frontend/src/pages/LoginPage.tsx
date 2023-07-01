@@ -37,6 +37,7 @@ export default function LoginPage() {
 
             navigate("/")
             setUser(true)
+            location.reload()
           }}
         >
           <Box className="flex flex-col items-center mb-6">

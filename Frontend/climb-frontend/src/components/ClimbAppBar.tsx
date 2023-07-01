@@ -136,6 +136,19 @@ export default function ClimbAppBar() {
                   <Typography textAlign="center">Utenti</Typography>
                 </MenuItem>
               }
+              {
+                userInfo && userInfo.isAdmin &&
+                <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu()
+                    navigate("/admin")
+                  }}
+                  href={"/admin"}
+                >
+                  <AdminPanelSettingsIcon />
+                  <Typography textAlign="center">Staff</Typography>
+                </MenuItem>
+              }
             </Menu>
           </Box>
           <Typography
@@ -177,6 +190,17 @@ export default function ClimbAppBar() {
               >
                 <AdminPanelSettingsIcon />
                 Utenti
+              </Button>
+            }
+            {
+              userInfo && userInfo.isAdmin &&
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                href={"/admin"}
+              >
+                <AdminPanelSettingsIcon />
+                Staff
               </Button>
             }
           </Box>

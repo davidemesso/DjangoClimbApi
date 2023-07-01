@@ -9,13 +9,15 @@ import SignupPage from "./pages/SignupPage";
 import ProfilePage from "./pages/ProfilePage";
 import UserCertificatesSection from "./sections/UserCertificatesSection";
 import PricesSection from "./sections/PricesSection";
+import StaffRegisterPage from "./pages/StaffRegisterPage";
 
 export interface UserInfo {
   readonly username : string,
   readonly email : string,
   readonly firstName : string,
   readonly lastName : string,
-  readonly isStaff : string
+  readonly isStaff : string,
+  readonly isAdmin : string,
   readonly id : number
 }
 
@@ -50,6 +52,7 @@ function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/users" element={<UserCertificatesSection />} />
+              <Route path="/admin" element={<StaffRegisterPage />} />
             </Routes>
         </UserInfoContext.Provider>
       </UserContext.Provider>
