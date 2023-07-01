@@ -14,7 +14,6 @@ class RoutesView(APIView):
         '''
         List all the Route items
         '''
-        print(request)
         routes = Route.objects\
             .all()\
             .prefetch_related("favorites")\

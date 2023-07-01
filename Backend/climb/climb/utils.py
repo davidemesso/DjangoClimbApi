@@ -5,9 +5,8 @@ from rest_framework import status
 def staff_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        print(args)
+
         request = args[1]
-        print(request.user)
         if not request.user.is_staff:
             return Response(
                 {"error": "You do not have staff permission."},
