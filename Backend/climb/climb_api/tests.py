@@ -67,10 +67,12 @@ class TestAverageFavoritesRoutesDifficultyTestCase(TestCase):
         self.favorite1 = Favorite.objects.create(user=self.user, route=self.route1)
         self.favorite2 = Favorite.objects.create(user=self.user, route=self.route2)
 
+    # Gets the average of a user having a 3 and a 4 routes favorites
     def test_average_favorites_routes_difficulty_with_favorites(self):
         average_difficulty = average_favorites_routes_difficulty(self.user)
         self.assertEqual(average_difficulty, 3.5)
 
+    # Gets the average of a user not having favorite routes (hard set to -1)
     def test_average_favorites_routes_difficulty_without_favorites(self):
         average_difficulty = average_favorites_routes_difficulty(self.user_without_favorites)
         self.assertEqual(average_difficulty, -1)
