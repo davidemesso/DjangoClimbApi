@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 import UserCertificatesSection from "./sections/UserCertificatesSection";
 import PricesSection from "./sections/PricesSection";
 import StaffRegisterPage from "./pages/StaffRegisterPage";
+import RecommendedRoutesSection from "./sections/RecommendedRoutesSection";
 
 export interface UserInfo {
   readonly username : string,

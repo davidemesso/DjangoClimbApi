@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { getAccessToken, getUserInfo } from '../utils/auth';
 import axios from 'axios';
 import { BACKEND_URL } from '../utils/urls';
+import RecommendedRoutesSection from '../sections/RecommendedRoutesSection';
 
 interface Certificate {
   readonly id: number,
@@ -86,6 +87,7 @@ export default function ProfilePage() {
   }
 
   return (
+    <>
     <Card className="m-4 max-w-[90%] mx-auto">
       <CardContent>
         <Box className="flex items-center justify-center">
@@ -178,5 +180,7 @@ export default function ProfilePage() {
         }
       </CardContent>
     </Card>
+    <RecommendedRoutesSection />
+    </>
   )
 }

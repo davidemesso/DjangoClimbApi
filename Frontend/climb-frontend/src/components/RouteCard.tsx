@@ -28,6 +28,7 @@ interface RouteCardProps {
   readonly favorites: Array<Favorite>;
   readonly refresh: any;
   readonly setRefresh: any;
+  readonly disableFavorites: boolean;
 }
 
 interface ExpandMoreProps extends IconButtonProps {
@@ -55,7 +56,8 @@ export default function RouteCard({
   favoritesCount,
   favorites,
   refresh,
-  setRefresh
+  setRefresh,
+  disableFavorites = false
 }: RouteCardProps) {
   const { userInfo } = useContext(UserInfoContext);
   const [expanded, setExpanded] = useState(false);
@@ -140,7 +142,7 @@ export default function RouteCard({
             <IconButton
               className={clicked ? "!text-red-600" : "!text-gray-500"}
               aria-label="add to favorites"
-              disabled={userInfo == null}
+              disabled={userInfo == null || disableFavorites}
               onClick={handleFavorite}
             >
               <FavoriteIcon className={containsFavorite(favorites, id) ? "text-red-600" : ""} />
@@ -174,7 +176,7 @@ export default function RouteCard({
         </CardContent>
       </Collapse>
       {
-        userInfo && userInfo.isStaff
+        userInfo && userInfo.isStaff && !disableFavorites
           ? <CardActions className='flex flex-row-reverse m-4 mt-0'>
             <Button size="small" variant='contained' color="error"
               onClick={async () => {

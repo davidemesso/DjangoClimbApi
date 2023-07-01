@@ -3,10 +3,12 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from climb_api.utils import average_favorites_routes_difficulty
 from climb.utils import authentication_required
 from climb.utils import staff_required
 from .models import Favorite, News, Price, Route
 from django.contrib.auth.models import User
+from django.db.models import F, Func
 from .serializers import FavoritesSerializer, GetNewsSerializer, GetPricesSerializer, GetRoutesSerializer, GetUsersSerializer, NewsSerializer, PricesSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer
 
 class RoutesView(APIView):
@@ -250,3 +252,42 @@ class PricesView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Price.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        
+class RecommendedRoutesView(APIView):
+    @authentication_required
+    def get(self, request):
+        '''
+        Gets the recommended routes based on user
+        '''
+        target_difficulty = average_favorites_routes_difficulty(request)
+        
+        routes = Route.objects\
+            .all()\
+            .filter(end_date__gte=timezone.now())\
+            .annotate(favorites_count=Count("favorites"))
+            
+        if target_difficulty:
+            routes = routes\
+                .annotate(abs_difficulty=Func(F('difficulty') - float(target_difficulty), function='ABS'))\
+                .filter(abs_difficulty__lte=2)\
+                .order_by('abs_difficulty', "-favorites_count")
+        else:
+            routes = routes.order_by("-favorites_count")
+        
+        serializer = GetRoutesSerializer(routes, many=True)
+        return Response(serializer.data)
+
+
+class AverageDifficultyView(APIView):
+    @authentication_required
+    def get(self, request):
+        '''
+        Gets current user average difficulty
+        '''
+        target_difficulty = average_favorites_routes_difficulty(request)
+        
+        if not target_difficulty:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        return Response(target_difficulty)
