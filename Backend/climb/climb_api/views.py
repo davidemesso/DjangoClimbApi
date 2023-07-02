@@ -1,3 +1,4 @@
+import json
 from django.db.models import Count
 from django.utils import timezone
 from rest_framework.views import APIView
@@ -9,6 +10,8 @@ from climb.utils import staff_required
 from .models import Favorite, News, Price, Route
 from django.contrib.auth.models import User
 from django.db.models import F, Func
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from .serializers import FavoritesSerializer, GetNewsSerializer, GetPricesSerializer, GetRoutesSerializer, GetUsersSerializer, NewsSerializer, PricesSerializer, RoutesSerializer, UpdateNewsSerializer, UpdateRoutesSerializer, UserFavoritesSerializer, GetUsersStaffSerializer
 
 class RoutesView(APIView):
@@ -311,3 +314,31 @@ class AverageDifficultyView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         return Response(target_difficulty)
+    
+    
+class RouteCompletionView(APIView):
+    @authentication_required
+    def get(self, request, route_id):
+        channel_layer = get_channel_layer()
+        
+        try:
+            route = Route.objects.get(pk=route_id)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        message = {
+            'type': 'send_message',
+            'message': json.dumps({
+                "name": route.name,
+                "difficulty": route.difficulty,
+                "userId": request.user.pk,
+                "username": request.user.username
+            })
+        }
+        
+        async_to_sync(channel_layer.group_send)(
+            "completions_group",
+            message
+        )
+
+        return Response(status=status.HTTP_200_OK)

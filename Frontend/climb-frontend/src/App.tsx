@@ -11,6 +11,7 @@ import UserCertificatesSection from "./sections/UserCertificatesSection";
 import PricesSection from "./sections/PricesSection";
 import StaffRegisterPage from "./pages/StaffRegisterPage";
 import CoursesSection from "./sections/CoursesSection";
+import CompletionsSection from "./sections/CompletionsSection";
 
 export interface UserInfo {
   readonly username : string,
@@ -55,6 +56,7 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/users" element={<UserCertificatesSection />} />
               <Route path="/admin" element={<StaffRegisterPage />} />
+              <Route path="/completions" element={<CompletionsSection />} />
             </Routes>
         </UserInfoContext.Provider>
       </UserContext.Provider>

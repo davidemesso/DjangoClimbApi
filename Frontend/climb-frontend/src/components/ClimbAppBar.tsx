@@ -124,6 +124,18 @@ export default function ClimbAppBar() {
                 </MenuItem>
               ))}
               {
+                userInfo &&
+                <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu()
+                    navigate("/completions")
+                  }}
+                  href={"/completions"}
+                >
+                  <Typography textAlign="center">Completamenti</Typography>
+                </MenuItem>
+              }
+              {
                 userInfo && userInfo.isStaff &&
                 <MenuItem
                   onClick={() => {
@@ -181,6 +193,16 @@ export default function ClimbAppBar() {
                 {page}
               </Button>
             ))}
+            {
+              userInfo &&
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                href={"/completions"}
+              >
+                Completamenti
+              </Button>
+            }
             {
               userInfo && userInfo.isStaff &&
               <Button
