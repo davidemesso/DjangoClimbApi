@@ -9,6 +9,7 @@ django = "*"
 django-cors-headers = "*"
 djangorestframework-simplejwt = "*"
 pillow = "*"
+channels = {extras = ["daphne"], version = "*"}
 
 [dev-packages]
 

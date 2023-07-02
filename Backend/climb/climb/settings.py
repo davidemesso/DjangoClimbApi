@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
@@ -89,8 +90,7 @@ REST_FRAMEWORK = {
      ],
 }
 
-WSGI_APPLICATION = 'climb.wsgi.application'
-
+ASGI_APPLICATION = 'climb.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
