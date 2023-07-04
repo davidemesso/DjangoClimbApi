@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, IconButton, TextField, Typography } from '@mui/material';
+import { Box, Card, CardContent, IconButton, Input, TextField, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
@@ -104,12 +104,13 @@ export default function AdminPriceTable() {
             error={error}
             required
           />
-          <TextField 
+          <input
             id="priceField"
-            label='Prezzo'
-            placeholder='Inserisci prezzo' 
-            error={error}
-            InputProps={{ type:'number', inputProps: { min: 0 } }} 
+            type='number'
+            step="0.1"
+            min='0'
+            placeholder='Inserisci prezzo'
+            className={`border rounded p-2 border-solid ${error?"border-red-500":"border-[darkgrey]"}`}
           />
           <IconButton 
             className='!p-4'

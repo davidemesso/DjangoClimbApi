@@ -159,13 +159,14 @@ export default function AddCourseCard({setRefresh, refresh} : AddCourseCardProps
                 onChange={(newValue) => setDate(newValue)}
                 />
             </LocalizationProvider>
-            <TextField 
+            <input
               id="priceField"
-              label='Prezzo'
-              placeholder='Inserisci prezzo' 
-              error={error}
-              InputProps={{ type:'number', inputProps: { min: 0 } }} 
-              />
+              type='number'
+              step="0.1"
+              min='0'
+              placeholder='Inserisci prezzo'
+              className={`border rounded p-2 border-solid ${error?"border-red-500":"border-[darkgrey]"}`}
+            />
             <TextField 
               id="maxPeopleField"
               label='Iscritti massimi'
