@@ -34,4 +34,7 @@ urlpatterns = [
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-seed_db()
+try:
+    seed_db()
+except:
+    pass

@@ -126,7 +126,7 @@ export default function ProfilePage() {
                   <Link
                     className='text-blue-500 ml-2 align-bottom'
                     target='_blank'
-                    to={`${BACKEND_URL}/${certificate.file}`}
+                    to={`${BACKEND_URL}${certificate.file}`}
                     >
                     Certificato medico
                   </Link>
