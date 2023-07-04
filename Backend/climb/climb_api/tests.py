@@ -28,6 +28,22 @@ class TestRoutesViewTestCase(TestCase):
         self.assertEqual(len(response.data), 2)
         self.assertEqual(response.data[0]['name'], 'Route 1')
         self.assertEqual(response.data[1]['name'], 'Route 2')
+    
+    # Result with 0 routes
+    def test_get_routes_without_results(self):
+        request = self.factory.get('/api/routes/', {'difficulty': 1})
+        view = RoutesView.as_view()
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
+    
+    # Difficulty out of range is considered as all
+    def test_get_routes_with_wrong_params(self):
+        request = self.factory.get('/api/routes/', {'difficulty': 6})
+        view = RoutesView.as_view()
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
 
     # Gets all routes ordered by likes ascending
     def test_get_routes_with_show_old_query_param(self):
@@ -75,4 +91,9 @@ class TestAverageFavoritesRoutesDifficultyTestCase(TestCase):
     # Gets the average of a user not having favorite routes (hard set to -1)
     def test_average_favorites_routes_difficulty_without_favorites(self):
         average_difficulty = average_favorites_routes_difficulty(self.user_without_favorites)
+        self.assertEqual(average_difficulty, -1)
+    
+    def test_average_favorites_routes_difficulty_without_user(self):
+        user = User()
+        average_difficulty = average_favorites_routes_difficulty(user)
         self.assertEqual(average_difficulty, -1)

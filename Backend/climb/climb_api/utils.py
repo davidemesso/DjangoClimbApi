@@ -3,6 +3,9 @@ from django.db.models import Avg
 
 
 def average_favorites_routes_difficulty(user):
+    if user is None or user.pk is None:
+        return -1
+    
     average_difficulty = Route.objects\
         .prefetch_related("favorites")\
         .filter(favorites__user=user.pk)\
