@@ -79,7 +79,7 @@ export default function ClimbAppBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Climb
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -180,7 +180,7 @@ export default function ClimbAppBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Climb
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {Object.entries(pages).map(([page, path]) => (

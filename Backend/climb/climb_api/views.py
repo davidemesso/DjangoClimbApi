@@ -1,4 +1,5 @@
 import json
+import random
 from django.db.models import Count
 from django.utils import timezone
 from rest_framework.views import APIView
@@ -329,10 +330,44 @@ class RouteCompletionView(APIView):
         message = {
             'type': 'send_message',
             'message': json.dumps({
-                "name": route.name,
-                "difficulty": route.difficulty,
-                "userId": request.user.pk,
-                "username": request.user.username
+                "type": "completion",
+                "message": {
+                    "id": route_id,
+                    "name": route.name,
+                    "difficulty": route.difficulty,
+                    "userId": request.user.pk,
+                    "username": request.user.username,
+                    "date": timezone.now().strftime("%Y-%m-%d %H:%M"),
+                    "random": random.randrange(1, 10**10)
+                }
+            })
+        }
+        
+        async_to_sync(channel_layer.group_send)(
+            "completions_group",
+            message
+        )
+
+        return Response(status=status.HTTP_200_OK)
+
+class RouteCompletionReactionView(APIView):
+    @authentication_required
+    def get(self, request, route_id):
+        channel_layer = get_channel_layer()
+        
+        try:
+            route = Route.objects.get(pk=route_id)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        message = {
+            'type': 'send_message',
+            'message': json.dumps({
+                "type": "reaction",
+                "message": {
+                    "id": route_id,
+                    "random": request.query_params.get('random')
+                }
             })
         }
         
