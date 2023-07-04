@@ -10,6 +10,7 @@ from .views import (
     PricesView,
     UserFavoritesView,
     UsersView,
+    UsersStaffView,
 )
 
 urlpatterns = [
@@ -23,5 +24,5 @@ urlpatterns = [
     path('routes/<int:route_id>/completion/reaction', RouteCompletionReactionView.as_view()),
     path('user/favorites', UserFavoritesView.as_view()),
     path('users/', UsersView.as_view()),
-    path('users/staff', UsersView.as_view()),
+    path('users/staff', UsersStaffView.as_view()),
 ]
