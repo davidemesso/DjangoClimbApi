@@ -52,7 +52,7 @@ const columns: GridColDef[] = [
           <Link
             className='text-blue-500 ml-2 align-bottom'
             target='_blank'
-            to={`${BACKEND_URL}/${cert}`}
+            to={`${BACKEND_URL}${cert}`}
           >
             Certificato medico
           </Link>

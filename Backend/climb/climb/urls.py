@@ -18,6 +18,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
+from climb.seedings import seed_db
 from climb_api import urls as api_urls
 from climb_auth import urls as auth_urls
 from climb_admin import urls as admin_urls
@@ -32,3 +33,5 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+seed_db()
